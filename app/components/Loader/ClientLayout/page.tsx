@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LoadingScreen } from "../LoadingScreen/page";
+import LoadingScreen from "@/app/components/Loader/LoadingScreen/page";
 
 export default function ClientLayout({
   children,

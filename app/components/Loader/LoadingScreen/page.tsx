@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-export const LoadingScreen = () => {
+const LoadingScreen = () => {
   return (
     <div className="fixed inset-0 bg-gradient-to-r from-[#2ABED9] to-[#1B4B82] flex items-center justify-center z-50">
       <div className="relative">
@@ -73,3 +73,5 @@ export const LoadingScreen = () => {
     </div>
   );
 };
+
+export default LoadingScreen;

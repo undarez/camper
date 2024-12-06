@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import { useState, useEffect } from "react";
 
-export function AdminDashboard() {
+const AdminDashboard = () => {
   const [stats, setStats] = useState({
     weeklyVisits: 0,
     monthlyVisits: 0,
@@ -121,4 +121,6 @@ export function AdminDashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminDashboard;
