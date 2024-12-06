@@ -15,7 +15,7 @@ import {
   Droplets,
 } from "lucide-react";
 // import { AdComponent } from "./components/AdComponent";
-import { ReviewCard } from "./components/ReviewCard";
+import ReviewCard from "./components/ReviewCard";
 export default async function Home() {
   const session = await getServerSession(authOptions);
   // Redirection si non connecté
