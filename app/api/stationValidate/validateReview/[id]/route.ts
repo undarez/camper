@@ -1,8 +1,8 @@
-import prisma from "../../../../../lib/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../../../lib/AuthOptions";
-import { encryptForDatabase } from "../../../../../lib/encryption";
+import { authOptions } from "@/lib/AuthOptions";
+import { encryptForDatabase } from "@/lib/encryption";
 
 const FORBIDDEN_WORDS = ["list", "of", "forbidden", "words"];
 
