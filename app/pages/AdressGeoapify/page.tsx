@@ -47,7 +47,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AdressGeoapify = ({
+const AdressGeoapify = ({
   onAddressSelect,
   errors,
   existingLocations = [],
