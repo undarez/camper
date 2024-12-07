@@ -27,7 +27,7 @@ const AdminPage = () => {
   }
 
   const handleStationsClick = () => {
-    router.push("/pages/AdminStation"); // Assurez-vous que ce chemin correspond à votre structure de routes
+    router.push("/pages/AdminStation/AdminPage"); // Assurez-vous que ce chemin correspond à votre structure de routes
   };
 
   return (

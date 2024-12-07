@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
-import { LoadingMap } from "../MapComponent/LoadingMap/page";
+import LoadingMap from "@/app/pages/MapComponent/LoadingMap/page";
 import { CamperWashStation, GeoapifyResult } from "../../types/typesGeoapify";
-import { AddStationModal } from "../MapComponent/AddStation_modal/page";
+import AddStationModal from "@/app/pages/MapComponent/AddStation_modal/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
