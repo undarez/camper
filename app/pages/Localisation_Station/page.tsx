@@ -164,7 +164,7 @@ const LocalisationStation = () => {
             <AdressGeoapifyWithNoSSR
               onAddressSelect={handleAddressSelect}
               errors={{}}
-              existingLocations={filteredLocations}
+              existingLocations={filteredLocations as CamperWashStation[]}
             />
           </div>
         </div>
