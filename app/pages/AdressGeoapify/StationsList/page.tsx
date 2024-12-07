@@ -40,7 +40,7 @@ interface StationsListProps {
 
 const ITEMS_PER_PAGE = 9;
 
-export function StationsList({ adminView = false }: StationsListProps) {
+const StationsList = ({ adminView = false }: StationsListProps) => {
   const [stations, setStations] = useState<CamperWashStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<Filters>({
@@ -350,7 +350,7 @@ export function StationsList({ adminView = false }: StationsListProps) {
       )}
     </div>
   );
-}
+};
 // Ajouter un export par défaut qui utilise le composant en mode normal
 export default function DefaultStationsList() {
   return <StationsList adminView={false} />;
