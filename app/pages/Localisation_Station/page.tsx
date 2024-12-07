@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import LoadingMap from "@/app/pages/MapComponent/LoadingMap/page";
-import { CamperWashStation, GeoapifyResult } from "../../types/typesGeoapify";
+import { CamperWashStation, GeoapifyResult } from "@/app/types/typesGeoapify";
 import AddStationModal from "@/app/pages/MapComponent/AddStation_modal/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import ConnectYou from "../auth/connect-you/page";
+import ConnectYou from "@/app/pages/auth/connect-you/page";
 import {
   Select,
   SelectContent,
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 
 const AdressGeoapifyWithNoSSR = dynamic(
-  () => import("../AdressGeoapify/page").then((mod) => mod.AdressGeoapify),
+  () => import("../AdressGeoapify/page").then((mod) => mod.default),
   { ssr: false, loading: () => <LoadingMap /> }
 );
 
