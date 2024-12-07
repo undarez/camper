@@ -52,12 +52,22 @@ export interface CamperWashStation {
   lat: number;
   lng: number;
   images: string[];
-  services: StationServices; // Utilisez la nouvelle interface
-  status: StationStatus;
-  author: StationAuthor;
-
-  createdAt?: Date;
-  updatedAt?: Date;
+  services: {
+    highPressure: string;
+    tirePressure: boolean;
+    vacuum: boolean;
+    handicapAccess: boolean;
+    wasteWater: boolean;
+    electricity: string;
+    paymentMethods: string[];
+    maxVehicleLength: number;
+  };
+  status: string;
+  author: {
+    name: string | null;
+    email: string;
+  };
+  createdAt: Date;
 }
 
 export type AddStationModalProps = {

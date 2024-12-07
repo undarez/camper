@@ -52,7 +52,7 @@ const AdressGeoapify = ({
   errors = {},
   existingLocations = [],
   defaultValue,
-}: Partial<AdressGeoapifyProps>) => {
+}: AdressGeoapifyProps) => {
   const [position, setPosition] = useState<LatLngTuple>(
     defaultValue ? [defaultValue.lat, defaultValue.lon] : [46.227638, 2.213749]
   );
@@ -126,7 +126,7 @@ const AdressGeoapify = ({
       },
       createdAt: new Date(),
     });
-    onAddressSelect?.(formatted, lat, lon);
+    onAddressSelect(formatted, lat, lon);
   };
 
   const handleLocationSelect = (location: CamperWashStation) => {
@@ -143,7 +143,7 @@ const AdressGeoapify = ({
       methods.setValue("address", defaultValue.formatted);
       methods.setValue("lat", defaultValue.lat);
       methods.setValue("lng", defaultValue.lon);
-      onAddressSelect?.(
+      onAddressSelect(
         defaultValue.formatted,
         defaultValue.lat,
         defaultValue.lon
