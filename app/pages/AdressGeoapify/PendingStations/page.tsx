@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function PendingStations() {
+const PendingStations = () => {
   const [stations, setStations] = useState<CamperWashStation[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -170,4 +170,6 @@ export function PendingStations() {
       ))}
     </div>
   );
-}
+};
+
+export default PendingStations;

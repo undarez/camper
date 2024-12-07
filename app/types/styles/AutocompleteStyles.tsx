@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
-export const AutocompleteStyles = createGlobalStyle`
+const AutocompleteStyles = createGlobalStyle`
   .geoapify-autocomplete-input {
     width: 100%;
     height: 2.5rem;
@@ -44,3 +44,5 @@ export const AutocompleteStyles = createGlobalStyle`
     border-bottom-right-radius: 0.375rem;
   }
 `;
+
+export default AutocompleteStyles;

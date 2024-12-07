@@ -1,4 +1,4 @@
-export default function MentionsLegales() {
+const MentionsLegales = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-white">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -36,4 +36,6 @@ export default function MentionsLegales() {
       </div>
     </div>
   );
-}
+};
+
+export default MentionsLegales;

@@ -12,7 +12,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { useRouter } from "next/navigation";
-const Page = () => {
+const Header = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const isAdmin = session?.user?.email === "fortuna77320@gmail.com";
@@ -138,4 +138,4 @@ const Page = () => {
     </header>
   );
 };
-export default Page;
+export default Header;

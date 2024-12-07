@@ -18,7 +18,7 @@ interface NavigationButtonProps {
   address: string;
 }
 
-export function NavigationButton({ lat, lng, address }: NavigationButtonProps) {
+const NavigationButton = ({ lat, lng, address }: NavigationButtonProps) => {
   const navigationApps = [
     {
       name: "Google Maps",
@@ -127,4 +127,6 @@ export function NavigationButton({ lat, lng, address }: NavigationButtonProps) {
       </Button>
     </div>
   );
-}
+};
+
+export default NavigationButton;

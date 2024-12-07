@@ -3,9 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/app/pages/Header/page";
 import SessionsWrapper from "@/app/pages/SessionsWrapper/page";
-import CookiesConsentModal from "./pages/Juridique/CookiesConsentModal/page";
-import { Footer } from "./pages/Footer/page";
-import ClientLayout from "./components/Loader/ClientLayout/page";
+import CookiesConsentModal from "@/app/pages/Juridique/CookiesConsentModal/page";
+import Footer from "@/app/pages/Footer/page";
+import ClientLayout from "@/app/components/Loader/ClientLayout/page";
 import MobileSidebar from "@/app/pages/mobile-sidebar/page";
 
 const geistSans = localFont({

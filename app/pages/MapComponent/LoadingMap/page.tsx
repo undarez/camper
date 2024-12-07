@@ -1,4 +1,4 @@
-export const LoadingMap = () => {
+const LoadingMap = () => {
   return (
     <div className="h-full w-full rounded-lg overflow-hidden border border-border">
       <div className="h-full w-full flex items-center justify-center bg-muted">
@@ -10,3 +10,5 @@ export const LoadingMap = () => {
     </div>
   );
 };
+
+export default LoadingMap;

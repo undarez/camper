@@ -138,7 +138,7 @@ const renderServiceValue = (key: string, value: unknown): string => {
   return String(value);
 };
 
-export default function StationDetail() {
+const StationDetail = () => {
   const { data: session } = useSession();
   const params = useParams();
   const [station, setStation] = useState<StationWithDetails | null>(null);
@@ -359,4 +359,6 @@ export default function StationDetail() {
       </Card>
     </div>
   );
-}
+};
+
+export default StationDetail;

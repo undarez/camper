@@ -2,12 +2,12 @@
 
 import { useSession } from "next-auth/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AdminDashboard } from "@/app/pages/AdminStation/AdminDashboard/page";
-import { PendingStations } from "@/app/pages/AdressGeoapify/PendingStations/page";
+import AdminDashboard from "@/app/pages/AdminStation/AdminDashboard/page";
+import PendingStations from "@/app/pages/AdressGeoapify/PendingStations/page";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2, LayoutDashboard, MapPin, Clock } from "lucide-react";
 
-export default function AdminPage() {
+const AdminPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -68,4 +68,6 @@ export default function AdminPage() {
       </Tabs>
     </div>
   );
-}
+};
+
+export default AdminPage;

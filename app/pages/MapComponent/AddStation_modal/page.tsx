@@ -43,12 +43,12 @@ type StationServicesData = {
   stationId: string;
 };
 
-export function AddStationModal({
+const AddStationModal = ({
   isOpen,
   onClose,
   selectedLocation,
   onAddStation,
-}: AddStationModalProps) {
+}: AddStationModalProps) => {
   const [name, setName] = useState("");
   const [services, setServices] = useState<StationServicesData>({
     id: uuidv4(),
@@ -344,4 +344,6 @@ export function AddStationModal({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default AddStationModal;

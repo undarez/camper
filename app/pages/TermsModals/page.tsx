@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-export function TermsModal() {
+const TermsModal = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -77,4 +77,6 @@ export function TermsModal() {
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default TermsModal;

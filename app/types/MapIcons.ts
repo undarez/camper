@@ -18,6 +18,6 @@ export const icons: Record<IconType, Icon> = {
   default: createIcon("blue"),
   active: createIcon("green"),
   inactive: createIcon("red"),
-  pending: createIcon("orange"),
+  en_attente: createIcon("orange"),
   selected: createIcon("yellow"),
 };

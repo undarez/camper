@@ -67,11 +67,14 @@ export const AdressGeoapify = ({
             lng: defaultValue.lon,
             images: [],
             services: {
-              highPressure: false,
+              highPressure: "NONE",
               tirePressure: false,
               vacuum: false,
               handicapAccess: false,
               wasteWater: false,
+              electricity: "NONE",
+              paymentMethods: [],
+              maxVehicleLength: 0,
             },
             status: "en_attente",
             author: {
@@ -107,11 +110,14 @@ export const AdressGeoapify = ({
       lng: lon,
       images: [],
       services: {
-        highPressure: false,
+        highPressure: "NONE",
         tirePressure: false,
         vacuum: false,
         handicapAccess: false,
         wasteWater: false,
+        electricity: "NONE",
+        paymentMethods: [],
+        maxVehicleLength: 0,
       },
       status: "en_attente",
       author: {

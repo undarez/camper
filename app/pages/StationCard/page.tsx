@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import ConnectYou from "../auth/connect-you/page";
 import { useSession } from "next-auth/react";
-import { NavigationButton } from "../MapComponent/NavigationGpsButton/page";
+import NavigationButton from "../MapComponent/NavigationGpsButton/page";
 
 interface StationWithDetails extends Station {
   services: Service;
@@ -126,8 +126,7 @@ const StationCard = ({ station }: { station: StationWithDetails }) => {
     </Link>
   );
 };
-
-export default function ValidatedStations() {
+const ValidatedStations = () => {
   const [stations, setStations] = useState<StationWithDetails[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -187,4 +186,6 @@ export default function ValidatedStations() {
       </div>
     </div>
   );
-}
+};
+
+export default ValidatedStations;

@@ -5,7 +5,7 @@ import { Mail, Facebook, Twitter, Instagram } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-export function Footer() {
+const Footer = () => {
   const handleMailTo = () => {
     window.location.href = "/pages/Contact";
   };
@@ -125,4 +125,6 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

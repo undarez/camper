@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ConnectYou from "@/app/pages/auth/connect-you/page";
 
-const Page = () => {
+const Profil = () => {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -108,4 +108,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Profil;

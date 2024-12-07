@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { CamperWashStation } from "@/app/types/typesGeoapify";
 
-export default function AdminStations() {
+const AdminStations = () => {
   const { data: session } = useSession();
   const [stations, setStations] = useState<CamperWashStation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,4 +139,6 @@ export default function AdminStations() {
       </Table>
     </div>
   );
-}
+};
+
+export default AdminStations;

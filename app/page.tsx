@@ -4,7 +4,6 @@ import { authOptions } from "@/lib/AuthOptions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-// import { AdComponent } from "@/components/AdComponent";
 import {
   MapPin,
   Star,
@@ -14,8 +13,8 @@ import {
   Car,
   Droplets,
 } from "lucide-react";
-// import { AdComponent } from "./components/AdComponent";
-import ReviewCard from "./components/ReviewCard";
+import ReviewCard from "@/app/components/ReviewCard";
+
 export default async function Home() {
   const session = await getServerSession(authOptions);
   // Redirection si non connecté
@@ -177,37 +176,5 @@ export default async function Home() {
         </CardContent>
       </Card>
     );
-
-    function ReviewCard({
-      name,
-      rating,
-      comment,
-      date,
-    }: {
-      name: string;
-      rating: number;
-      comment: string;
-      date: string;
-    }) {
-      return (
-        <Card className="bg-white/10 backdrop-blur-sm border-[#A5E9FF]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="font-semibold">{name}</span>
-              <div className="flex">
-                {[...Array(rating)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4 fill-[#FFD700] text-[#FFD700]"
-                  />
-                ))}
-              </div>
-            </div>
-            <p className="text-muted-foreground mb-2">{comment}</p>
-            <span className="text-sm text-muted-foreground">{date}</span>
-          </CardContent>
-        </Card>
-      );
-    }
   }
 }

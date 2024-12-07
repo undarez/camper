@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
-export function AdminDashboard() {
+const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalStations: 0,
     activeStations: 0,
@@ -100,4 +100,6 @@ export function AdminDashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminDashboard;
