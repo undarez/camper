@@ -77,8 +77,8 @@ export type StationFilters = {
 
 export type AdressGeoapifyProps = {
   onAddressSelect: (formatted: string, lat: number, lon: number) => void;
-  errors: Record<string, { message?: string }>;
-  existingLocations: CamperWashStation[];
+  errors?: Record<string, { message?: string }>;
+  existingLocations?: CamperWashStation[];
   defaultValue?: {
     formatted: string;
     lat: number;

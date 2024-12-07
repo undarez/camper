@@ -49,7 +49,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const AdressGeoapify = ({
   onAddressSelect,
-  errors,
+  errors = {},
   existingLocations = [],
   defaultValue,
 }: AdressGeoapifyProps) => {
