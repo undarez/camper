@@ -53,7 +53,7 @@ export interface CamperWashStation {
   lng: number;
   images: string[];
   services: StationServices; // Utilisez la nouvelle interface
-  status: string;
+  status: StationStatus;
   author: StationAuthor;
 
   createdAt?: Date;
