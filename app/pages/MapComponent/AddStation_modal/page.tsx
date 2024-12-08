@@ -43,12 +43,7 @@ type StationServicesData = {
   stationId: string;
 };
 
-const AddStationModal = ({
-  isOpen,
-  onClose,
-  selectedLocation,
-  onAddStation,
-}: AddStationModalProps) => {
+const AddStationModal: React.FC<AddStationModalProps> = (props) => {
   const [name, setName] = useState("");
   const [services, setServices] = useState<StationServicesData>({
     id: uuidv4(),
@@ -66,15 +61,15 @@ const AddStationModal = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedLocation) return;
+    if (!props.selectedLocation) return;
 
     setIsSubmitting(true);
     try {
-      await onAddStation({
+      await props.onAddStation({
         name,
-        address: selectedLocation.properties.formatted,
-        lat: selectedLocation.properties.lat,
-        lng: selectedLocation.properties.lon,
+        address: props.selectedLocation.properties.formatted,
+        lat: props.selectedLocation.properties.lat,
+        lng: props.selectedLocation.properties.lon,
         images: [],
         services,
         status: "en_attente",
@@ -91,11 +86,11 @@ const AddStationModal = ({
         },
         body: JSON.stringify({
           name,
-          address: selectedLocation.properties.formatted,
+          address: props.selectedLocation.properties.formatted,
         }),
       });
 
-      onClose();
+      props.onClose();
     } catch (error) {
       console.error("Erreur lors de l'ajout de la station:", error);
     } finally {
@@ -118,11 +113,11 @@ const AddStationModal = ({
       maxVehicleLength: null,
       stationId: "",
     });
-    onClose();
+    props.onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={props.isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Ajouter une station</DialogTitle>
@@ -142,7 +137,7 @@ const AddStationModal = ({
           <div>
             <Label>Adresse</Label>
             <p className="text-sm text-muted-foreground">
-              {selectedLocation?.properties.formatted}
+              {props.selectedLocation?.properties.formatted}
             </p>
           </div>
 
@@ -333,7 +328,7 @@ const AddStationModal = ({
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button variant="outline" type="button" onClick={onClose}>
+            <Button variant="outline" type="button" onClick={props.onClose}>
               Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting}>
