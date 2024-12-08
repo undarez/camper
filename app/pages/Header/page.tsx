@@ -47,7 +47,7 @@ const Header = () => {
               <MenubarContent className="bg-white/95 backdrop-blur-sm">
                 <MenubarItem>
                   <Link
-                    href="/pages/Localisation_Station"
+                    href="/components/localisationStation2"
                     className="flex w-full"
                   >
                     Ajouter une station
