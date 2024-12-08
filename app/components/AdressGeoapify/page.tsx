@@ -18,7 +18,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { CamperWashStation, GeoapifyResult } from "@/app/types/typesGeoapify";
+import { GeoapifyResult, CamperWashStation } from "@/app/types/typesGeoapify";
 import { Input } from "@/components/ui/input";
 
 // Chargement dynamique de la carte
@@ -45,12 +45,12 @@ const formSchema = z.object({
 const AdressGeoapify = ({
   onAddressSelect,
   errors = {},
-  existingLocations = [],
+  existingLocations = [] as CamperWashStation[],
   defaultValue,
 }: {
   onAddressSelect?: (formatted: string, lat: number, lon: number) => void;
   errors?: Record<string, { message?: string }>;
-  existingLocations?: any[]; // Utilisation d'un type générique pour simplifier
+  existingLocations?: CamperWashStation[];
   defaultValue?: {
     formatted?: string;
     lat?: number;
