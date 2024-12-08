@@ -19,12 +19,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  GeoapifyResult,
+  CamperWashStation,
+} from "../../../types/typesGeoapify";
 
 const AddStationModal = ({
   isOpen,
   onClose,
   selectedLocation,
   onAddStation,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedLocation: GeoapifyResult | null;
+  onAddStation: (
+    station: Omit<CamperWashStation, "id" | "createdAt">
+  ) => Promise<void>;
 }) => {
   const [name, setName] = useState("");
   const [services, setServices] = useState({
