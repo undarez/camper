@@ -73,7 +73,10 @@ const AdminStations = () => {
     }
   };
 
-  if (session?.user?.email !== "fortuna77320@gmail.com") {
+  if (
+    session?.user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
+    status === "unauthenticated"
+  ) {
     return <div>Accès non autorisé</div>;
   }
 

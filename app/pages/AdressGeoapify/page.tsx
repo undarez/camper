@@ -19,11 +19,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  GeoapifyResult,
-  CamperWashStation,
-  AdressGeoapifyProps,
-} from "@/app/types/typesGeoapify";
+import { GeoapifyResult, CamperWashStation } from "@/app/types/typesGeoapify";
+
+// Définition des types directement ici
+export interface AdressGeoapifyProps {
+  onAddressSelect: (formatted: string, lat: number, lon: number) => void;
+  errors?: Record<string, { message?: string }>;
+  existingLocations?: CamperWashStation[];
+  defaultValue?: {
+    formatted: string;
+    lat: number;
+    lon: number;
+  };
+}
 
 // Chargement dynamique de la carte
 const Map = dynamic(

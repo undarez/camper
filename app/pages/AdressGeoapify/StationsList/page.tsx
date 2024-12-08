@@ -56,7 +56,7 @@ const StationsList = ({ adminView = false }: StationsListProps) => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const { data: session } = useSession();
-  const isAdmin = session?.user?.email === "fortuna77320@gmail.com";
+  const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   useEffect(() => {
     fetchStations();
