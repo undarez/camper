@@ -85,16 +85,16 @@ export type StationFilters = {
   search: string;
 };
 
-// export interface AdressGeoapifyProps {
-//   onAddressSelect: (formatted: string, lat: number, lon: number) => void;
-//   errors?: Record<string, { message?: string }>;
-//   existingLocations?: CamperWashStation[];
-//   defaultValue?: {
-//     formatted: string;
-//     lat: number;
-//     lon: number;
-//   };
-// }
+export interface AddressProps {
+  onAddressSelect: (formatted: string, lat: number, lon: number) => void;
+  errors?: Record<string, { message?: string }>;
+  existingLocations?: CamperWashStation[];
+  defaultValue?: {
+    formatted: string;
+    lat: number;
+    lon: number;
+  };
+}
 
 export type MapComponentProps = {
   position: LatLngTuple;

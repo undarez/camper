@@ -18,20 +18,12 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  GeoapifyResult,
+  AddressProps,
+  CamperWashStation,
+} from "@/app/types/typesGeoapify";
 import { Input } from "@/components/ui/input";
-import { GeoapifyResult, CamperWashStation } from "@/app/types/typesGeoapify";
-
-// Définition des types directement ici
-export interface AdressGeoapifyProps {
-  onAddressSelect: (formatted: string, lat: number, lon: number) => void;
-  errors?: Record<string, { message?: string }>;
-  existingLocations?: CamperWashStation[];
-  defaultValue?: {
-    formatted: string;
-    lat: number;
-    lon: number;
-  };
-}
 
 // Chargement dynamique de la carte
 const Map = dynamic(
@@ -60,39 +52,12 @@ const AdressGeoapify = ({
   errors = {},
   existingLocations = [],
   defaultValue,
-}: AdressGeoapifyProps) => {
+}: AddressProps) => {
   const [position, setPosition] = useState<LatLngTuple>(
     defaultValue ? [defaultValue.lat, defaultValue.lon] : [46.227638, 2.213749]
   );
   const [selectedLocation, setSelectedLocation] =
-    useState<CamperWashStation | null>(
-      defaultValue
-        ? {
-            id: "temp-id",
-            name: "Nouvel emplacement",
-            address: defaultValue.formatted,
-            lat: defaultValue.lat,
-            lng: defaultValue.lon,
-            images: [],
-            services: {
-              highPressure: "NONE",
-              tirePressure: false,
-              vacuum: false,
-              handicapAccess: false,
-              wasteWater: false,
-              electricity: "NONE",
-              paymentMethods: [],
-              maxVehicleLength: 0,
-            },
-            status: "en_attente",
-            author: {
-              name: null,
-              email: "",
-            },
-            createdAt: new Date(),
-          }
-        : null
-    );
+    useState<CamperWashStation | null>(null);
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -135,14 +100,6 @@ const AdressGeoapify = ({
       createdAt: new Date(),
     });
     onAddressSelect(formatted, lat, lon);
-  };
-
-  const handleLocationSelect = (location: CamperWashStation) => {
-    setSelectedLocation(location);
-    setPosition([location.lat, location.lng]);
-    methods.setValue("address", location.address);
-    methods.setValue("lat", location.lat);
-    methods.setValue("lng", location.lng);
   };
 
   useEffect(() => {
@@ -191,7 +148,6 @@ const AdressGeoapify = ({
             </FormItem>
           )}
         />
-
         {selectedLocation && (
           <div className="p-4 bg-muted rounded-lg">
             <h3 className="font-bold text-lg mb-2">{selectedLocation.name}</h3>
@@ -221,16 +177,14 @@ const AdressGeoapify = ({
             </div>
           </div>
         )}
-
         <div className="h-[400px] w-full">
           <Map
             position={position}
             selectedLocation={selectedLocation}
             existingLocations={existingLocations}
-            onLocationSelect={handleLocationSelect}
+            onLocationSelect={setSelectedLocation}
           />
         </div>
-
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={methods.control}
