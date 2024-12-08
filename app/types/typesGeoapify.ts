@@ -69,14 +69,14 @@ export interface CamperWashStation {
   };
   createdAt: Date;
 }
-export type AddStationModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  selectedLocation: GeoapifyResult | null;
-  onAddStation: (
-    station: Omit<CamperWashStation, "id" | "createdAt">
-  ) => Promise<void>;
-};
+// export type AddStationModalProps = {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   selectedLocation: GeoapifyResult | null;
+//   onAddStation: (
+//     station: Omit<CamperWashStation, "id" | "createdAt">
+//   ) => Promise<void>;
+// };
 
 export type StationFilters = {
   services: Partial<Record<keyof Omit<ServiceType, "id">, boolean>>;

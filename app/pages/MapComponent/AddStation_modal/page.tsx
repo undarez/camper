@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GeoapifyResult, CamperWashStation } from "@/app/types/typesGeoapify";
 import { v4 as uuidv4 } from "uuid";
 import {
   Select,
@@ -21,31 +20,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface AddStationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  selectedLocation: GeoapifyResult | null;
-  onAddStation: (
-    station: Omit<CamperWashStation, "id" | "createdAt">
-  ) => Promise<void>;
-}
-
-type StationServicesData = {
-  id: string;
-  highPressure: "NONE" | "PASSERELLE" | "ECHAFAUDAGE" | "PORTIQUE";
-  tirePressure: boolean;
-  vacuum: boolean;
-  handicapAccess: boolean;
-  wasteWater: boolean;
-  electricity: "NONE" | "AMP_8" | "AMP_15";
-  paymentMethods: ("JETON" | "ESPECES" | "CARTE_BANCAIRE")[];
-  maxVehicleLength: number | null;
-  stationId: string;
-};
-
-const AddStationModal: React.FC<AddStationModalProps> = (props) => {
+const AddStationModal = ({
+  isOpen,
+  onClose,
+  selectedLocation,
+  onAddStation,
+}) => {
   const [name, setName] = useState("");
-  const [services, setServices] = useState<StationServicesData>({
+  const [services, setServices] = useState({
     id: uuidv4(),
     highPressure: "NONE",
     tirePressure: false,
@@ -59,17 +41,17 @@ const AddStationModal: React.FC<AddStationModalProps> = (props) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!props.selectedLocation) return;
+    if (!selectedLocation) return;
 
     setIsSubmitting(true);
     try {
-      await props.onAddStation({
+      await onAddStation({
         name,
-        address: props.selectedLocation.properties.formatted,
-        lat: props.selectedLocation.properties.lat,
-        lng: props.selectedLocation.properties.lon,
+        address: selectedLocation.properties.formatted,
+        lat: selectedLocation.properties.lat,
+        lng: selectedLocation.properties.lon,
         images: [],
         services,
         status: "en_attente",
@@ -86,11 +68,11 @@ const AddStationModal: React.FC<AddStationModalProps> = (props) => {
         },
         body: JSON.stringify({
           name,
-          address: props.selectedLocation.properties.formatted,
+          address: selectedLocation.properties.formatted,
         }),
       });
 
-      props.onClose();
+      onClose();
     } catch (error) {
       console.error("Erreur lors de l'ajout de la station:", error);
     } finally {
@@ -113,11 +95,11 @@ const AddStationModal: React.FC<AddStationModalProps> = (props) => {
       maxVehicleLength: null,
       stationId: "",
     });
-    props.onClose();
+    onClose();
   };
 
   return (
-    <Dialog open={props.isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Ajouter une station</DialogTitle>
@@ -137,7 +119,7 @@ const AddStationModal: React.FC<AddStationModalProps> = (props) => {
           <div>
             <Label>Adresse</Label>
             <p className="text-sm text-muted-foreground">
-              {props.selectedLocation?.properties.formatted}
+              {selectedLocation?.properties.formatted}
             </p>
           </div>
 
@@ -151,11 +133,7 @@ const AddStationModal: React.FC<AddStationModalProps> = (props) => {
                   onValueChange={(value) =>
                     setServices({
                       ...services,
-                      highPressure: value as
-                        | "NONE"
-                        | "PASSERELLE"
-                        | "ECHAFAUDAGE"
-                        | "PORTIQUE",
+                      highPressure: value,
                     })
                   }
                 >
@@ -175,7 +153,7 @@ const AddStationModal: React.FC<AddStationModalProps> = (props) => {
                 <Label htmlFor="electricity">Type d&apos;électricité</Label>
                 <Select
                   value={services.electricity}
-                  onValueChange={(value: "NONE" | "AMP_8" | "AMP_15") =>
+                  onValueChange={(value) =>
                     setServices({
                       ...services,
                       electricity: value,
@@ -271,7 +249,10 @@ const AddStationModal: React.FC<AddStationModalProps> = (props) => {
                     id="vacuum"
                     checked={services.vacuum}
                     onCheckedChange={(checked) =>
-                      setServices({ ...services, vacuum: checked as boolean })
+                      setServices({
+                        ...services,
+                        vacuum: checked as boolean,
+                      })
                     }
                   />
                   <Label htmlFor="vacuum">Aspirateur</Label>
@@ -328,7 +309,7 @@ const AddStationModal: React.FC<AddStationModalProps> = (props) => {
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button variant="outline" type="button" onClick={props.onClose}>
+            <Button variant="outline" type="button" onClick={onClose}>
               Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting}>
