@@ -69,7 +69,6 @@ export interface CamperWashStation {
   };
   createdAt: Date;
 }
-
 export type AddStationModalProps = {
   isOpen: boolean;
   onClose: () => void;

@@ -18,11 +18,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  GeoapifyResult,
-  AddressProps,
-  CamperWashStation,
-} from "@/app/types/typesGeoapify";
+import { GeoapifyResult, CamperWashStation } from "@/app/types/typesGeoapify";
 import { Input } from "@/components/ui/input";
 
 // Chargement dynamique de la carte
@@ -45,6 +41,18 @@ const formSchema = z.object({
   lng: z.number(),
 });
 
+// Type avec des propriétés facultatives
+type AdressGeoapifyProps = {
+  onAddressSelect?: (formatted: string, lat: number, lon: number) => void;
+  errors?: Record<string, { message?: string }>;
+  existingLocations?: CamperWashStation[];
+  defaultValue?: {
+    formatted?: string;
+    lat?: number;
+    lon?: number;
+  };
+};
+
 type FormValues = z.infer<typeof formSchema>;
 
 const AdressGeoapify = ({
@@ -52,9 +60,11 @@ const AdressGeoapify = ({
   errors = {},
   existingLocations = [],
   defaultValue,
-}: AddressProps) => {
+}: AdressGeoapifyProps) => {
   const [position, setPosition] = useState<LatLngTuple>(
-    defaultValue ? [defaultValue.lat, defaultValue.lon] : [46.227638, 2.213749]
+    defaultValue
+      ? [defaultValue.lat || 0, defaultValue.lon || 0]
+      : [46.227638, 2.213749]
   );
   const [selectedLocation, setSelectedLocation] =
     useState<CamperWashStation | null>(null);
@@ -99,19 +109,19 @@ const AdressGeoapify = ({
       },
       createdAt: new Date(),
     });
-    onAddressSelect(formatted, lat, lon);
+    onAddressSelect?.(formatted, lat, lon);
   };
 
   useEffect(() => {
     if (defaultValue) {
-      setPosition([defaultValue.lat, defaultValue.lon]);
-      methods.setValue("address", defaultValue.formatted);
-      methods.setValue("lat", defaultValue.lat);
-      methods.setValue("lng", defaultValue.lon);
-      onAddressSelect(
-        defaultValue.formatted,
-        defaultValue.lat,
-        defaultValue.lon
+      setPosition([defaultValue.lat || 0, defaultValue.lon || 0]);
+      methods.setValue("address", defaultValue.formatted || "");
+      methods.setValue("lat", defaultValue.lat || 0);
+      methods.setValue("lng", defaultValue.lon || 0);
+      onAddressSelect?.(
+        defaultValue.formatted || "",
+        defaultValue.lat || 0,
+        defaultValue.lon || 0
       );
     }
   }, [defaultValue, onAddressSelect, methods]);
