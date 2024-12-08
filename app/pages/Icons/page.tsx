@@ -1,3 +1,6 @@
+"use client";
+import React from "react";
+
 import {
   Instagram,
   Loader2,
@@ -10,7 +13,7 @@ import {
 
 export type Icon = LucideIcon;
 
-export const Icons = {
+const Icons = {
   spinner: Loader2,
   instagram: Instagram,
   facebook: Facebook,
@@ -36,3 +39,5 @@ export const Icons = {
   settings: Settings,
   logout: LogOut,
 };
+
+export default Icons;
