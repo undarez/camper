@@ -2,7 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/app/pages/Icons/page";
+import Icons from "@/app/pages/Icons/page";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
