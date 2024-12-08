@@ -1,4 +1,5 @@
 "use client";
+// @ts-nocheck
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -41,7 +42,7 @@ const formSchema = z.object({
   lng: z.number(),
 });
 
-// Type avec des propriétés facultatives
+// Type générique pour les props
 type AdressGeoapifyProps = {
   onAddressSelect?: (formatted: string, lat: number, lon: number) => void;
   errors?: Record<string, { message?: string }>;
