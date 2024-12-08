@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { GeoapifyResult, CamperWashStation } from "@/app/types/typesGeoapify";
-import { Input } from "@/components/ui/input"; // Assurez-vous que l'importation est correcte
+import { Input } from "@/components/ui/input";
 
 // Chargement dynamique de la carte
 const Map = dynamic(
@@ -41,18 +41,6 @@ const formSchema = z.object({
   lng: z.number(),
 });
 
-// Type générique pour les props
-type AdressGeoapifyProps = {
-  onAddressSelect?: (formatted: string, lat: number, lon: number) => void;
-  errors?: Record<string, { message?: string }>;
-  existingLocations?: CamperWashStation[]; // Utilisation d'un type spécifique
-  defaultValue?: {
-    formatted?: string;
-    lat?: number;
-    lon?: number;
-  };
-};
-
 type FormValues = z.infer<typeof formSchema>;
 
 const AdressGeoapify = ({
@@ -60,14 +48,23 @@ const AdressGeoapify = ({
   errors = {},
   existingLocations = [],
   defaultValue,
-}: AdressGeoapifyProps) => {
+}: {
+  onAddressSelect?: (formatted: string, lat: number, lon: number) => void;
+  errors?: Record<string, { message?: string }>;
+  existingLocations?: CamperWashStation[];
+  defaultValue?: {
+    formatted?: string;
+    lat?: number;
+    lon?: number;
+  };
+}) => {
   const [position, setPosition] = useState<LatLngTuple>(
     defaultValue
       ? [defaultValue.lat || 0, defaultValue.lon || 0]
       : [46.227638, 2.213749]
   );
   const [selectedLocation, setSelectedLocation] =
-    useState<CamperWashStation | null>(null); // Utilisation d'un type spécifique
+    useState<CamperWashStation | null>(null);
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -101,7 +98,7 @@ const AdressGeoapify = ({
         electricity: "NONE",
         paymentMethods: [],
         maxVehicleLength: 0,
-      }, // Utilisation d'un type générique
+      },
       status: "en_attente",
       author: {
         name: null,

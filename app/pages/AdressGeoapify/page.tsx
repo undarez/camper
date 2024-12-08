@@ -41,8 +41,14 @@
 //   lng: z.number(),
 // });
 
-// // Type générique pour les props
-// type AdressGeoapifyProps = {
+// type FormValues = z.infer<typeof formSchema>;
+
+// const AdressGeoapify = ({
+//   onAddressSelect,
+//   errors = {},
+//   existingLocations = [],
+//   defaultValue,
+// }: {
 //   onAddressSelect?: (formatted: string, lat: number, lon: number) => void;
 //   errors?: Record<string, { message?: string }>;
 //   existingLocations?: CamperWashStation[];
@@ -51,16 +57,7 @@
 //     lat?: number;
 //     lon?: number;
 //   };
-// };
-
-// type FormValues = z.infer<typeof formSchema>;
-
-// const AdressGeoapify = ({
-//   onAddressSelect,
-//   errors = {},
-//   existingLocations = [],
-//   defaultValue,
-// }: AdressGeoapifyProps) => {
+// }) => {
 //   const [position, setPosition] = useState<LatLngTuple>(
 //     defaultValue
 //       ? [defaultValue.lat || 0, defaultValue.lon || 0]
