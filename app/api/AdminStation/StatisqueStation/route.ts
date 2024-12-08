@@ -3,7 +3,14 @@ import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/AuthOptions";
 
-export async function GET() {
+export async function GET(request) {
+  const headers = request.headers;
+
+  const authHeader = headers.get("Authorization");
+  if (!authHeader) {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  }
+
   try {
     const session = await getServerSession(authOptions);
 
