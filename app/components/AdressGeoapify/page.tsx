@@ -45,7 +45,7 @@ const formSchema = z.object({
 type AdressGeoapifyProps = {
   onAddressSelect?: (formatted: string, lat: number, lon: number) => void;
   errors?: Record<string, { message?: string }>;
-  existingLocations?: CamperWashStation[];
+  existingLocations?: CamperWashStation[]; // Utilisation d'un type spécifique
   defaultValue?: {
     formatted?: string;
     lat?: number;
@@ -67,7 +67,7 @@ const AdressGeoapify = ({
       : [46.227638, 2.213749]
   );
   const [selectedLocation, setSelectedLocation] =
-    useState<CamperWashStation | null>(null);
+    useState<CamperWashStation | null>(null); // Utilisation d'un type spécifique
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -101,7 +101,7 @@ const AdressGeoapify = ({
         electricity: "NONE",
         paymentMethods: [],
         maxVehicleLength: 0,
-      },
+      }, // Utilisation d'un type générique
       status: "en_attente",
       author: {
         name: null,
@@ -190,7 +190,7 @@ const AdressGeoapify = ({
         <div className="h-[400px] w-full">
           <Map
             position={position}
-            selectedLocation={selectedLocation} // Ajout de selectedLocation ici
+            selectedLocation={selectedLocation}
             existingLocations={existingLocations}
             onLocationSelect={setSelectedLocation}
           />
