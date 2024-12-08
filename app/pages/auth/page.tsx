@@ -2,9 +2,10 @@
 
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import Icons from "@/app/components/Icons/page"; // Assurez-vous d'importer le type Icon
+// import Icons from "@/app/components/Icons/page"; // Assurez-vous d'importer le type Icon
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { Loader2, Globe, Facebook, Instagram } from "lucide-react";
 
 export function AuthForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -32,9 +33,9 @@ export function AuthForm() {
           disabled={isLoading}
         >
           {isLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <Icons.google className="mr-2 h-4 w-4" />
+            <Globe className="mr-2 h-4 w-4" />
           )}
           Google
         </Button>
@@ -46,9 +47,9 @@ export function AuthForm() {
           className="bg-[#1877F2] text-white hover:bg-[#166fe5] hover:text-white"
         >
           {isLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <Icons.facebook className="mr-2 h-4 w-4" />
+            <Facebook className="mr-2 h-4 w-4" />
           )}
           Facebook
         </Button>
@@ -60,9 +61,9 @@ export function AuthForm() {
           className="bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white hover:opacity-90"
         >
           {isLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <Icons.instagram className="mr-2 h-4 w-4" />
+            <Instagram className="mr-2 h-4 w-4" />
           )}
           Instagram
         </Button>
