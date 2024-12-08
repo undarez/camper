@@ -1,6 +1,4 @@
-"use client";
 import React from "react";
-
 import {
   Instagram,
   Loader2,
@@ -13,7 +11,18 @@ import {
 
 export type Icon = LucideIcon;
 
-const Icons = {
+// Définir le type pour l'objet Icons
+interface IconsType {
+  spinner: React.FC<React.SVGProps<SVGSVGElement>>;
+  instagram: React.FC<React.SVGProps<SVGSVGElement>>;
+  facebook: React.FC<React.SVGProps<SVGSVGElement>>;
+  google: React.FC<React.SVGProps<SVGSVGElement>>;
+  user: React.FC<React.SVGProps<SVGSVGElement>>;
+  settings: React.FC<React.SVGProps<SVGSVGElement>>;
+  logout: React.FC<React.SVGProps<SVGSVGElement>>;
+}
+
+const Icons: IconsType = {
   spinner: Loader2,
   instagram: Instagram,
   facebook: Facebook,
@@ -34,7 +43,6 @@ const Icons = {
       ></path>
     </svg>
   ),
-
   user: User,
   settings: Settings,
   logout: LogOut,
