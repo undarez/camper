@@ -41,12 +41,11 @@
 //   lng: z.number(),
 // });
 
-// type FormValues = z.infer<typeof formSchema>;
-
+// // Type générique pour les props
 // const AdressGeoapify = ({
 //   onAddressSelect,
 //   errors = {},
-//   existingLocations = [],
+//   existingLocations = [] as CamperWashStation[],
 //   defaultValue,
 // }: {
 //   onAddressSelect?: (formatted: string, lat: number, lon: number) => void;
@@ -66,7 +65,7 @@
 //   const [selectedLocation, setSelectedLocation] =
 //     useState<CamperWashStation | null>(null);
 
-//   const methods = useForm<FormValues>({
+//   const methods = useForm({
 //     resolver: zodResolver(formSchema),
 //     defaultValues: {
 //       address: defaultValue?.formatted || "",
