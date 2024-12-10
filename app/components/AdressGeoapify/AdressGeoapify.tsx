@@ -14,6 +14,7 @@ import {
   GeoapifyGeocoderAutocomplete,
 } from "@geoapify/react-geocoder-autocomplete";
 import { icon } from "leaflet";
+import { CheckCircle2, XCircle, Clock } from "lucide-react";
 
 // Configuration des icônes Leaflet selon le statut
 const createIcon = (status: string) => {
@@ -65,6 +66,28 @@ const AdressGeoapify = ({
     onAddressSelect(formatted, lat, lon);
   };
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "active":
+        return <CheckCircle2 className="h-4 w-4 text-green-500 inline-block" />;
+      case "en_attente":
+        return <Clock className="h-4 w-4 text-yellow-500 inline-block" />;
+      default:
+        return <XCircle className="h-4 w-4 text-red-500 inline-block" />;
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "active":
+        return "Validée";
+      case "en_attente":
+        return "En attente";
+      default:
+        return "Non validée";
+    }
+  };
+
   const formatServices = (services: StationServices) => {
     const servicesList = [];
     if (services.highPressure !== "NONE")
@@ -75,7 +98,7 @@ const AdressGeoapify = ({
     if (services.wasteWater) servicesList.push("Eaux usées");
     if (services.electricity !== "NONE")
       servicesList.push(`Électricité: ${services.electricity}`);
-    return servicesList.join("\n");
+    return servicesList;
   };
 
   if (isModalOpen) {
@@ -139,20 +162,27 @@ const AdressGeoapify = ({
                           : "bg-red-100 text-red-800"
                       }`}
                     >
-                      {location.status === "active"
-                        ? "Active"
-                        : location.status === "en_attente"
-                        ? "En attente"
-                        : "Inactive"}
+                      {getStatusText(location.status)}
                     </span>
                   </div>
                 </div>
               </Popup>
-              <Tooltip direction="top" offset={[0, -20]} permanent>
-                <div className="text-sm">
-                  <strong>{location.name}</strong>
-                  <br />
-                  {formatServices(location.services)}
+              <Tooltip direction="top" offset={[0, -20]}>
+                <div className="text-sm bg-white p-2 rounded-lg shadow-lg">
+                  <div className="flex items-center gap-2 mb-1">
+                    <strong>{location.name}</strong>
+                    {getStatusIcon(location.status)}
+                    <span className="text-xs text-gray-600">
+                      ({getStatusText(location.status)})
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    {formatServices(location.services).map((service, index) => (
+                      <div key={index} className="text-xs">
+                        • {service}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </Tooltip>
             </Marker>
