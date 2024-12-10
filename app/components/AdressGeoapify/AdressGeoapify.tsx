@@ -14,7 +14,7 @@ import {
   GeoapifyContext,
   GeoapifyGeocoderAutocomplete,
 } from "@geoapify/react-geocoder-autocomplete";
-import L from "leaflet";
+import { icon } from "leaflet";
 import { v4 as uuidv4 } from "uuid";
 
 // Configuration des icônes Leaflet selon le statut
@@ -28,7 +28,7 @@ const createIcon = (status: string) => {
       ? "red"
       : "blue";
 
-  return L.icon({
+  return icon({
     iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
     shadowUrl:
       "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",

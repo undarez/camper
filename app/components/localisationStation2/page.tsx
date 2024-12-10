@@ -20,7 +20,9 @@ import {
 
 const AdressGeoapifyWithNoSSR = dynamic(
   () =>
-    import("@/app/components/AdressGeoapify/page").then((mod) => mod.default),
+    import("@/app/components/AdressGeoapify/AdressGeoapifyWrapper").then(
+      (mod) => mod.default
+    ),
   { ssr: false, loading: () => <LoadingMap /> }
 );
 

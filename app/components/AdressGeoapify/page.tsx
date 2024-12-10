@@ -1,24 +1,10 @@
 "use client";
 
-import { CamperWashStation } from "@/app/types";
-import AdressGeoapify from "./AdressGeoapify";
-
-interface AdressGeoapifyPageProps {
-  onAddressSelect: (formatted: string, lat: number, lon: number) => void;
-  existingLocations?: CamperWashStation[];
-  isModalOpen?: boolean;
-}
-
-export default function AdressGeoapifyPage({
-  onAddressSelect,
-  existingLocations = [],
-  isModalOpen = false,
-}: AdressGeoapifyPageProps) {
+export default function AdressGeoapifyPage() {
   return (
-    <AdressGeoapify
-      onAddressSelect={onAddressSelect}
-      existingLocations={existingLocations}
-      isModalOpen={isModalOpen}
-    />
+    <div className="container mx-auto p-4">
+      <h1>Adresse Geoapify</h1>
+      <p>Cette page n'est pas destinée à être utilisée directement.</p>
+    </div>
   );
 }
