@@ -1,10 +1,24 @@
-import { sendNewStationNotification } from "@/lib/email";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const notificationSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
   address: z.string().min(1, "L'adresse est requise"),
+  author: z.object({
+    name: z.string().nullable(),
+    email: z.string().email("Email invalide").optional(),
+  }),
+  services: z.object({
+    highPressure: z.string(),
+    tirePressure: z.boolean(),
+    vacuum: z.boolean(),
+    handicapAccess: z.boolean(),
+    wasteWater: z.boolean(),
+    electricity: z.string(),
+  }),
 });
 
 if (!process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
@@ -26,18 +40,73 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validatedData = notificationSchema.parse(body);
 
-    await sendNewStationNotification(
-      validatedData.name,
-      validatedData.address,
-      process.env.NEXT_PUBLIC_ADMIN_EMAIL
-    );
+    // Formater les services pour l'email
+    const servicesList = [];
+    if (validatedData.services.highPressure !== "NONE")
+      servicesList.push(
+        `Haute pression: ${validatedData.services.highPressure}`
+      );
+    if (validatedData.services.tirePressure)
+      servicesList.push("Pression des pneus");
+    if (validatedData.services.vacuum) servicesList.push("Aspirateur");
+    if (validatedData.services.handicapAccess)
+      servicesList.push("Accès handicapé");
+    if (validatedData.services.wasteWater) servicesList.push("Eaux usées");
+    if (validatedData.services.electricity !== "NONE")
+      servicesList.push(`Électricité: ${validatedData.services.electricity}`);
+
+    // Email à l'administrateur
+    await resend.emails.send({
+      from: "CamperWash <noreply@camperwash.com>",
+      to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+      subject: "Nouvelle station CamperWash créée",
+      html: `
+        <h2>Nouvelle station créée</h2>
+        <p><strong>Nom de la station:</strong> ${validatedData.name}</p>
+        <p><strong>Adresse:</strong> ${validatedData.address}</p>
+        <p><strong>Créée par:</strong> ${
+          validatedData.author.name || validatedData.author.email || "Anonyme"
+        }</p>
+        <h3>Services proposés:</h3>
+        <ul>
+          ${servicesList.map((service) => `<li>${service}</li>`).join("")}
+        </ul>
+        <p>Connectez-vous au tableau de bord administrateur pour valider cette station.</p>
+      `,
+    });
+
+    // Email à l'utilisateur si un email est fourni
+    if (validatedData.author.email) {
+      await resend.emails.send({
+        from: "CamperWash <noreply@camperwash.com>",
+        to: validatedData.author.email,
+        subject: "Votre station CamperWash a été soumise",
+        html: `
+          <h2>Merci d'avoir soumis une nouvelle station !</h2>
+          <p>Votre station "${
+            validatedData.name
+          }" a été soumise avec succès.</p>
+          <p>Détails de la station :</p>
+          <ul>
+            <li>Adresse : ${validatedData.address}</li>
+            <li>Services proposés :
+              <ul>
+                ${servicesList.map((service) => `<li>${service}</li>`).join("")}
+              </ul>
+            </li>
+          </ul>
+          <p>Notre équipe va examiner votre soumission dans les plus brefs délais.</p>
+          <p>Nous vous notifierons dès que votre station sera validée.</p>
+        `,
+      });
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Notification envoyée avec succès à l'administrateur",
+      message: "Notifications envoyées avec succès",
     });
   } catch (error) {
-    console.error("Erreur lors de l'envoi de la notification:", error);
+    console.error("Erreur lors de l'envoi des notifications:", error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -49,7 +118,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: "Erreur serveur lors de l'envoi de la notification",
+        error: "Erreur serveur lors de l'envoi des notifications",
       },
       { status: 500 }
     );

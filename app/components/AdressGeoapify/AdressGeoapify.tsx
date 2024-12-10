@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {
   CamperWashStation,
@@ -15,7 +14,6 @@ import {
   GeoapifyGeocoderAutocomplete,
 } from "@geoapify/react-geocoder-autocomplete";
 import { icon } from "leaflet";
-import { v4 as uuidv4 } from "uuid";
 
 // Configuration des icônes Leaflet selon le statut
 const createIcon = (status: string) => {
@@ -45,51 +43,39 @@ interface AddressProps {
   isModalOpen?: boolean;
 }
 
+interface StationServices {
+  id: string;
+  highPressure: HighPressureType;
+  tirePressure: boolean;
+  vacuum: boolean;
+  handicapAccess: boolean;
+  wasteWater: boolean;
+  electricity: ElectricityType;
+  paymentMethods: string[];
+  maxVehicleLength: number | null;
+}
+
 const AdressGeoapify = ({
   onAddressSelect,
   existingLocations = [],
   isModalOpen = false,
 }: AddressProps) => {
-  const [selectedLocation, setSelectedLocation] =
-    useState<CamperWashStation | null>(null);
-
-  const handleLocationSelect = (location: CamperWashStation) => {
-    setSelectedLocation(location);
-    onAddressSelect(location.address, location.lat, location.lng);
-  };
-
   const handleNewLocationSelect = (location: GeoapifyResult) => {
     const { formatted, lat, lon } = location.properties;
-
-    // Créer une nouvelle station avec les types corrects
-    const newStation: CamperWashStation = {
-      id: uuidv4(),
-      name: "",
-      address: formatted,
-      lat: lat,
-      lng: lon,
-      images: [],
-      services: {
-        id: uuidv4(),
-        highPressure: "NONE" as HighPressureType,
-        tirePressure: false,
-        vacuum: false,
-        handicapAccess: false,
-        wasteWater: false,
-        electricity: "NONE" as ElectricityType,
-        paymentMethods: [],
-        maxVehicleLength: null,
-      },
-      status: "en_attente",
-      author: {
-        name: null,
-        email: "",
-      },
-      createdAt: new Date(),
-    };
-
-    setSelectedLocation(newStation);
     onAddressSelect(formatted, lat, lon);
+  };
+
+  const formatServices = (services: StationServices) => {
+    const servicesList = [];
+    if (services.highPressure !== "NONE")
+      servicesList.push(`Haute pression: ${services.highPressure}`);
+    if (services.tirePressure) servicesList.push("Pression des pneus");
+    if (services.vacuum) servicesList.push("Aspirateur");
+    if (services.handicapAccess) servicesList.push("Accès handicapé");
+    if (services.wasteWater) servicesList.push("Eaux usées");
+    if (services.electricity !== "NONE")
+      servicesList.push(`Électricité: ${services.electricity}`);
+    return servicesList.join("\n");
   };
 
   if (isModalOpen) {
@@ -132,14 +118,17 @@ const AdressGeoapify = ({
               key={location.id}
               position={[location.lat, location.lng]}
               icon={createIcon(location.status)}
-              eventHandlers={{
-                click: () => handleLocationSelect(location),
-              }}
             >
               <Popup>
                 <div className="p-2">
                   <h3 className="font-semibold">{location.name}</h3>
                   <p className="text-sm text-gray-600">{location.address}</p>
+                  <p className="text-sm text-gray-600">
+                    Latitude: {location.lat}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Longitude: {location.lng}
+                  </p>
                   <div className="mt-2">
                     <span
                       className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
@@ -159,14 +148,15 @@ const AdressGeoapify = ({
                   </div>
                 </div>
               </Popup>
+              <Tooltip direction="top" offset={[0, -20]} permanent>
+                <div className="text-sm">
+                  <strong>{location.name}</strong>
+                  <br />
+                  {formatServices(location.services)}
+                </div>
+              </Tooltip>
             </Marker>
           ))}
-          {selectedLocation && (
-            <Marker
-              position={[selectedLocation.lat, selectedLocation.lng]}
-              icon={createIcon("en_attente")}
-            />
-          )}
         </MapContainer>
       </div>
     </div>

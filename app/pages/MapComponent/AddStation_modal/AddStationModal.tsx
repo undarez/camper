@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,7 @@ import {
   CamperWashStation,
   HighPressureType,
   ElectricityType,
+  StationStatus,
 } from "@/app/types";
 
 interface AddStationModalProps {
@@ -41,6 +43,7 @@ const AddStationModal = ({
   selectedLocation,
   onAddStation,
 }: AddStationModalProps) => {
+  const { data: session } = useSession();
   const [name, setName] = useState("");
   const [services, setServices] = useState({
     id: uuidv4(),
@@ -62,19 +65,21 @@ const AddStationModal = ({
 
     setIsSubmitting(true);
     try {
-      await onAddStation({
+      const newStation = {
         name,
         address: selectedLocation.properties.formatted,
         lat: selectedLocation.properties.lat,
         lng: selectedLocation.properties.lon,
         images: [],
         services,
-        status: "en_attente",
+        status: "en_attente" as StationStatus,
         author: {
-          name: null,
-          email: "",
+          name: session?.user?.name || null,
+          email: session?.user?.email || "",
         },
-      });
+      };
+
+      await onAddStation(newStation);
 
       await fetch("/api/notify-new-station", {
         method: "POST",
@@ -84,6 +89,18 @@ const AddStationModal = ({
         body: JSON.stringify({
           name,
           address: selectedLocation.properties.formatted,
+          author: {
+            name: session?.user?.name || null,
+            email: session?.user?.email || "",
+          },
+          services: {
+            highPressure: services.highPressure,
+            tirePressure: services.tirePressure,
+            vacuum: services.vacuum,
+            handicapAccess: services.handicapAccess,
+            wasteWater: services.wasteWater,
+            electricity: services.electricity,
+          },
         }),
       });
 
@@ -176,7 +193,7 @@ const AddStationModal = ({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionnez le type" />
+                    <SelectValue placeholder="S��lectionnez le type" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="NONE">Pas d&apos;électricité</SelectItem>

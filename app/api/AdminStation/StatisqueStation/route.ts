@@ -1,57 +1,40 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/AuthOptions";
 
-export async function GET(request) {
-  const headers = request.headers;
-
-  const authHeader = headers.get("Authorization");
-  if (!authHeader) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
     if (
-      !session?.user?.email ||
-      session.user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL
+      !session ||
+      session.user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL
     ) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Récupérer les statistiques
-    const [totalStations, activeStations, pendingStations, analytics] =
-      await Promise.all([
-        prisma.station.count(),
-        prisma.station.count({ where: { status: "active" } }),
-        prisma.station.count({ where: { status: "en_attente" } }),
-        prisma.analytics.findMany({
-          where: {
-            timestamp: {
-              gte: new Date(new Date().setDate(new Date().getDate() - 30)), // Dernier mois
-            },
-          },
-        }),
-      ]);
+    const totalStations = await prisma.station.count();
+    const activeStations = await prisma.station.count({
+      where: { status: "active" },
+    });
+    const pendingStations = await prisma.station.count({
+      where: { status: "en_attente" },
+    });
 
-    // Calculer les visites hebdomadaires
-    const weekAgo = new Date(new Date().setDate(new Date().getDate() - 7));
-    const weeklyVisits = analytics.filter((a) => a.timestamp >= weekAgo).length;
-
-    // Calculer les visites mensuelles
-    const monthlyVisits = analytics.length;
-
-    return NextResponse.json({
+    // Pour les visites, nous pourrions implémenter un système de tracking plus tard
+    // Pour l'instant, on renvoie des valeurs par défaut
+    const stats = {
       totalStations,
       activeStations,
       pendingStations,
-      weeklyVisits,
-      monthlyVisits,
-    });
+      weeklyVisits: 0,
+      monthlyVisits: 0,
+    };
+
+    return NextResponse.json(stats);
   } catch (error) {
     console.error("Erreur lors de la récupération des statistiques:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
