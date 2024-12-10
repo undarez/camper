@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import LoadingMap from "@/app/pages/MapComponent/LoadingMap/page";
 import { CamperWashStation, GeoapifyResult } from "@/app/types";
-import AddStationModal from "@/app/pages/MapComponent/AddStation_modal/page";
+import AddStationModal from "@/app/pages/MapComponent/AddStation_modal/AddStationModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
