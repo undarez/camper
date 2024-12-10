@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 const notificationSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
@@ -55,9 +61,20 @@ export async function POST(request: Request) {
     if (validatedData.services.electricity !== "NONE")
       servicesList.push(`Électricité: ${validatedData.services.electricity}`);
 
+    // Vérifier si les identifiants Gmail sont disponibles
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      console.warn(
+        "Identifiants Gmail manquants. Les emails ne seront pas envoyés."
+      );
+      return NextResponse.json({
+        success: true,
+        message: "Station créée avec succès (notifications email désactivées)",
+      });
+    }
+
     // Email à l'administrateur
-    await resend.emails.send({
-      from: "CamperWash <noreply@camperwash.com>",
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
       to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
       subject: "Nouvelle station CamperWash créée",
       html: `
@@ -77,8 +94,8 @@ export async function POST(request: Request) {
 
     // Email à l'utilisateur si un email est fourni
     if (validatedData.author.email) {
-      await resend.emails.send({
-        from: "CamperWash <noreply@camperwash.com>",
+      await transporter.sendMail({
+        from: process.env.GMAIL_USER,
         to: validatedData.author.email,
         subject: "Votre station CamperWash a été soumise",
         html: `

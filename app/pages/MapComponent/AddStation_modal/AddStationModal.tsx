@@ -193,7 +193,7 @@ const AddStationModal = ({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="S��lectionnez le type" />
+                    <SelectValue placeholder="Sélectionnez le type" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="NONE">Pas d&apos;électricité</SelectItem>
