@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import ConnectYou from "../auth/connect-you/page";
 import { useSession } from "next-auth/react";
-import NavigationButton from "../MapComponent/NavigationGpsButton/page";
+import NavigationButton from "../MapComponent/NavigationGpsButton/NavigationButtonWrapper";
 
 interface StationWithDetails extends Station {
   services: Service;
