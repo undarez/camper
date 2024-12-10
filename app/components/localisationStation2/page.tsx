@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import LoadingMap from "@/app/pages/MapComponent/LoadingMap/page";
-import { CamperWashStation, GeoapifyResult } from "@/app/types/typesGeoapify";
+import { CamperWashStation, GeoapifyResult } from "@/app/types";
 import AddStationModal from "@/app/pages/MapComponent/AddStation_modal/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,25 +41,37 @@ const LocalisationStation = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  // Charger les stations existantes
+  useEffect(() => {
+    setIsAdmin(session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL);
+  }, [session]);
+
   useEffect(() => {
     const fetchStations = async () => {
       try {
         const response = await fetch("/api/stationUpdapte");
-        if (!response.ok)
+        if (!response.ok) {
           throw new Error("Erreur lors du chargement des stations");
+        }
         const data = await response.json();
-        setExistingLocations(data);
+        if (Array.isArray(data)) {
+          setExistingLocations(data);
+        } else {
+          console.error("Les données reçues ne sont pas un tableau:", data);
+          setExistingLocations([]);
+        }
       } catch (error) {
         console.error("Erreur:", error);
         toast.error("Impossible de charger les stations");
+        setExistingLocations([]);
       } finally {
         setIsLoading(false);
       }
     };
     fetchStations();
   }, []);
+
   if (!session) {
     return <ConnectYou />;
   }
@@ -81,10 +93,12 @@ const LocalisationStation = () => {
         body: JSON.stringify(station),
       });
 
-      if (!response.ok) throw new Error("Erreur lors de l'ajout de la station");
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'ajout de la station");
+      }
 
       const newStation = await response.json();
-      setExistingLocations([newStation, ...existingLocations]);
+      setExistingLocations((prev) => [newStation, ...prev]);
       toast.success("Station ajoutée avec succès");
     } catch (error) {
       console.error("Erreur:", error);
@@ -95,10 +109,10 @@ const LocalisationStation = () => {
 
   const filteredLocations = existingLocations.filter((location) => {
     const matchesSearch =
-      (location.name &&
-        location.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (location.address &&
-        location.address.toLowerCase().includes(searchTerm.toLowerCase()));
+      location.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      false ||
+      location.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      false;
     const matchesStatus =
       statusFilter === "all" || location.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -138,7 +152,7 @@ const LocalisationStation = () => {
           </div>
         </div>
       </div>
-      {/* Filtres */}
+
       <div className="flex gap-4 mb-6">
         <Input
           placeholder="Rechercher une station..."
@@ -164,8 +178,8 @@ const LocalisationStation = () => {
           <div className="h-[600px] rounded-lg overflow-hidden border border-border">
             <AdressGeoapifyWithNoSSR
               onAddressSelect={handleAddressSelect}
-              errors={{}}
-              existingLocations={filteredLocations as CamperWashStation[]}
+              existingLocations={filteredLocations}
+              isModalOpen={isModalOpen}
             />
           </div>
         </div>
@@ -190,11 +204,13 @@ const LocalisationStation = () => {
           <div className="p-4 bg-card rounded-lg border border-border">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Stations récentes</h2>
-              {session?.user?.email === "florianmtl@outlook.fr" && (
+              {isAdmin && (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => (window.location.href = "/admin/stations")}
+                  onClick={() =>
+                    (window.location.href = "/pages/AdminStation/AdminPage")
+                  }
                 >
                   Gérer les stations
                 </Button>
@@ -221,7 +237,7 @@ const LocalisationStation = () => {
                       }`}
                     ></span>
                     <span className="text-xs text-muted-foreground">
-                      {STATUS_DISPLAY[location.status || "inactive"]}
+                      {STATUS_DISPLAY[location.status]}
                     </span>
                   </div>
                 </div>

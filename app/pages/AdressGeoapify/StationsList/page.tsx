@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CamperWashStation, SERVICE_LABELS } from "@/app/types/typesGeoapify";
+import { CamperWashStation, SERVICE_LABELS } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";

@@ -7,6 +7,12 @@ const notificationSchema = z.object({
   address: z.string().min(1, "L'adresse est requise"),
 });
 
+if (!process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+  throw new Error(
+    "NEXT_PUBLIC_ADMIN_EMAIL n'est pas défini dans les variables d'environnement"
+  );
+}
+
 export async function POST(request: Request) {
   try {
     const contentType = request.headers.get("content-type");
@@ -20,11 +26,15 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validatedData = notificationSchema.parse(body);
 
-    await sendNewStationNotification(validatedData.name, validatedData.address);
+    await sendNewStationNotification(
+      validatedData.name,
+      validatedData.address,
+      process.env.NEXT_PUBLIC_ADMIN_EMAIL
+    );
 
     return NextResponse.json({
       success: true,
-      message: "Notification envoyée avec succès",
+      message: "Notification envoyée avec succès à l'administrateur",
     });
   } catch (error) {
     console.error("Erreur lors de l'envoi de la notification:", error);
