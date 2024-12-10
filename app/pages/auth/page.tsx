@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Loader2, Globe, Facebook, Instagram } from "lucide-react";
 
-function AuthForm() {
+export function AuthForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSignIn = async (
