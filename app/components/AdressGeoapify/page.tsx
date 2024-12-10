@@ -4,12 +4,18 @@ import { useState } from "react";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { CamperWashStation, GeoapifyResult } from "@/app/types";
+import {
+  CamperWashStation,
+  ElectricityType,
+  GeoapifyResult,
+  HighPressureType,
+} from "@/app/types";
 import {
   GeoapifyContext,
   GeoapifyGeocoderAutocomplete,
 } from "@geoapify/react-geocoder-autocomplete";
 import L from "leaflet";
+import { v4 as uuidv4 } from "uuid";
 
 // Configuration des icônes Leaflet selon le statut
 const createIcon = (status: string) => {
@@ -54,6 +60,35 @@ const AdressGeoapify = ({
 
   const handleNewLocationSelect = (location: GeoapifyResult) => {
     const { formatted, lat, lon } = location.properties;
+
+    // Créer une nouvelle station avec les types corrects
+    const newStation: CamperWashStation = {
+      id: uuidv4(),
+      name: "",
+      address: formatted,
+      lat: lat,
+      lng: lon,
+      images: [],
+      services: {
+        id: uuidv4(),
+        highPressure: "NONE" as HighPressureType,
+        tirePressure: false,
+        vacuum: false,
+        handicapAccess: false,
+        wasteWater: false,
+        electricity: "NONE" as ElectricityType,
+        paymentMethods: [],
+        maxVehicleLength: null,
+      },
+      status: "en_attente",
+      author: {
+        name: null,
+        email: "",
+      },
+      createdAt: new Date(),
+    };
+
+    setSelectedLocation(newStation);
     onAddressSelect(formatted, lat, lon);
   };
 

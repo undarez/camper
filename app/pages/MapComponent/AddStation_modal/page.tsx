@@ -22,7 +22,9 @@ import {
 import {
   GeoapifyResult,
   CamperWashStation,
-} from "../../../types/typesGeoapify";
+  HighPressureType,
+  ElectricityType,
+} from "@/app/types";
 
 const AddStationModal = ({
   isOpen,
@@ -40,12 +42,12 @@ const AddStationModal = ({
   const [name, setName] = useState("");
   const [services, setServices] = useState({
     id: uuidv4(),
-    highPressure: "NONE",
+    highPressure: "NONE" as HighPressureType,
     tirePressure: false,
     vacuum: false,
     handicapAccess: false,
     wasteWater: false,
-    electricity: "NONE",
+    electricity: "NONE" as ElectricityType,
     paymentMethods: [],
     maxVehicleLength: null,
     stationId: "",
@@ -96,12 +98,12 @@ const AddStationModal = ({
     setName("");
     setServices({
       id: uuidv4(),
-      highPressure: "NONE",
+      highPressure: "NONE" as HighPressureType,
       tirePressure: false,
       vacuum: false,
       handicapAccess: false,
       wasteWater: false,
-      electricity: "NONE",
+      electricity: "NONE" as ElectricityType,
       paymentMethods: [],
       maxVehicleLength: null,
       stationId: "",
@@ -141,7 +143,7 @@ const AddStationModal = ({
                 <Label htmlFor="highPressure">Type de haute pression</Label>
                 <Select
                   value={services.highPressure}
-                  onValueChange={(value) =>
+                  onValueChange={(value: HighPressureType) =>
                     setServices({
                       ...services,
                       highPressure: value,
@@ -164,7 +166,7 @@ const AddStationModal = ({
                 <Label htmlFor="electricity">Type d&apos;électricité</Label>
                 <Select
                   value={services.electricity}
-                  onValueChange={(value) =>
+                  onValueChange={(value: ElectricityType) =>
                     setServices({
                       ...services,
                       electricity: value,
