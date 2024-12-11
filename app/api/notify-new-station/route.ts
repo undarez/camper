@@ -120,23 +120,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Notifications envoyées avec succès",
+      message: "Station créée et notifications envoyées avec succès",
     });
   } catch (error) {
-    console.error("Erreur lors de l'envoi des notifications:", error);
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { success: false, error: "Données invalides", details: error.errors },
-        { status: 400 }
-      );
-    }
-
+    console.error("Erreur lors de la création de la station:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: "Erreur serveur lors de l'envoi des notifications",
-      },
+      { success: false, error: "Erreur lors de la création de la station" },
       { status: 500 }
     );
   }
