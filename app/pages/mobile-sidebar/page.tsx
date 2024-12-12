@@ -20,13 +20,17 @@ import {
 const menuItems = [
   { href: "/", label: "Accueil", icon: Home },
   { href: "/pages/StationCard", label: "Stations", icon: MapPin },
-  { href: "/pages/Localisation_Station", label: "Carte", icon: Map },
+  { href: "/pages/LocalisationStation2", label: "Carte", icon: Map },
   { href: "/pages/Contact", label: "Contact", icon: Mail },
   { href: "/pages/About", label: "À propos", icon: Info },
 ];
 
 const adminItems = [
-  { href: "/admin/stations", label: "Gestion des stations", icon: Settings },
+  {
+    href: "/pages/AdminStation",
+    label: "Gestion des stations",
+    icon: Settings,
+  },
   { href: "/admin/users", label: "Gestion des utilisateurs", icon: Users },
 ];
 

@@ -7,6 +7,7 @@ import CookiesConsentModal from "@/app/pages/Juridique/CookiesConsentModal/page"
 import Footer from "@/app/pages/Footer/page";
 import ClientLayout from "@/app/components/Loader/ClientLayout/page";
 import MobileSidebar from "@/app/pages/mobile-sidebar/page";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -23,6 +24,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "CamperWash",
   description: "Trouvez les meilleures stations de lavage pour camping-car",
+  other: {
+    "google-adsense-account": "ca-pub-9668851625466214",
+  },
 };
 
 export default function RootLayout({
@@ -33,6 +37,14 @@ export default function RootLayout({
   return (
     <SessionsWrapper>
       <html lang="fr">
+        <head>
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9668851625466214"
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
