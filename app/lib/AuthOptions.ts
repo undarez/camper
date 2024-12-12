@@ -17,14 +17,30 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.INSTAGRAM_CLIENT_ID!,
       clientSecret: process.env.INSTAGRAM_CLIENT_SECRET!,
       authorization: {
+        url: "https://api.instagram.com/oauth/authorize",
         params: {
-          scope: "instagram_basic,instagram_graph_user_profile",
+          scope: "user_profile,user_media",
+          response_type: "code",
         },
+      },
+      userinfo: {
+        url: "https://graph.instagram.com/me",
+        params: { fields: "id,username,account_type,name" },
+      },
+      profile(profile) {
+        return {
+          id: profile.id,
+          name: profile.username,
+          email: null,
+          image: null,
+        };
       },
     }),
   ],
+  debug: process.env.NODE_ENV === "development",
   pages: {
     signIn: "/pages/auth/connect-you",
+    error: "/pages/auth/error",
   },
   callbacks: {
     async session({ session, token }) {
@@ -32,6 +48,11 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) return url;
+      else if (url.startsWith("/")) return new URL(url, baseUrl).toString();
+      return baseUrl;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
