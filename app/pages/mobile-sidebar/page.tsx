@@ -16,6 +16,7 @@ import {
   Users,
   Menu,
 } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const menuItems = [
   { href: "/", label: "Accueil", icon: Home },
@@ -37,9 +38,15 @@ const adminItems = [
 const MobileSidebar = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  // Fermeture automatique lors du changement de route
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"

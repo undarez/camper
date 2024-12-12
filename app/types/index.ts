@@ -54,6 +54,7 @@ export type CamperWashStation = {
   status: StationStatus;
   author: StationAuthor;
   createdAt: Date;
+  userId?: string;
 };
 
 export type GeoapifyResult = {

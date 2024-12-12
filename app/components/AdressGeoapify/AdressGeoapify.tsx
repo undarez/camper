@@ -101,10 +101,6 @@ const AdressGeoapify = ({
     return servicesList;
   };
 
-  if (isModalOpen) {
-    return null;
-  }
-
   return (
     <div className="space-y-4">
       <div className="relative w-full">
@@ -125,70 +121,70 @@ const AdressGeoapify = ({
           </GeoapifyContext>
         </div>
       </div>
-      <div className="h-[600px] rounded-lg overflow-hidden border border-border relative">
-        <MapContainer
-          center={[46.603354, 1.888334]}
-          zoom={6}
-          className="h-full w-full"
-          zoomControl={false}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {existingLocations.map((location) => (
-            <Marker
-              key={location.id}
-              position={[location.lat, location.lng]}
-              icon={createIcon(location.status)}
-            >
-              <Popup>
-                <div className="p-2">
-                  <h3 className="font-semibold">{location.name}</h3>
-                  <p className="text-sm text-gray-600">{location.address}</p>
-                  <p className="text-sm text-gray-600">
-                    Latitude: {location.lat}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Longitude: {location.lng}
-                  </p>
-                  <div className="mt-2">
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        location.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : location.status === "en_attente"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {getStatusText(location.status)}
-                    </span>
-                  </div>
-                </div>
-              </Popup>
-              <Tooltip direction="top" offset={[0, -20]}>
-                <div className="text-sm bg-white p-2 rounded-lg shadow-lg">
-                  <div className="flex items-center gap-2 mb-1">
-                    <strong>{location.name}</strong>
-                    {getStatusIcon(location.status)}
-                    <span className="text-xs text-gray-600">
-                      ({getStatusText(location.status)})
-                    </span>
-                  </div>
-                  <div className="space-y-1">
-                    {formatServices(location.services).map((service, index) => (
-                      <div key={index} className="text-xs">
-                        • {service}
+      {!isModalOpen && (
+        <div className="h-[600px] rounded-lg overflow-hidden border border-border relative">
+          <MapContainer
+            center={[46.603354, 1.888334]}
+            zoom={6}
+            className="h-full w-full"
+            zoomControl={false}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {existingLocations.map((location) => (
+              <Marker
+                key={location.id}
+                position={[location.lat, location.lng]}
+                icon={createIcon(location.status)}
+              >
+                <Popup className="station-popup">
+                  <div className="p-2 max-w-xs">
+                    <h3 className="font-semibold text-base">{location.name}</h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {location.address}
+                    </p>
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-gray-500">
+                        Coordonnées: {location.lat.toFixed(6)},{" "}
+                        {location.lng.toFixed(6)}
+                      </p>
+                      <div className="flex items-center gap-1">
+                        {getStatusIcon(location.status)}
+                        <span className="text-sm">
+                          {getStatusText(location.status)}
+                        </span>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              </Tooltip>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
+                </Popup>
+                <Tooltip
+                  direction="top"
+                  offset={[0, -20]}
+                  className="station-tooltip"
+                >
+                  <div className="bg-white p-2 rounded-lg shadow-lg max-w-xs">
+                    <div className="flex items-center gap-2 mb-2">
+                      <strong className="text-sm">{location.name}</strong>
+                      {getStatusIcon(location.status)}
+                    </div>
+                    <div className="space-y-1">
+                      {formatServices(location.services).map(
+                        (service, index) => (
+                          <div key={index} className="text-xs">
+                            • {service}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </Tooltip>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
+      )}
     </div>
   );
 };

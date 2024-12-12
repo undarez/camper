@@ -81,23 +81,20 @@ const AddStationModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await onAddStation(formData);
-
-      // Notification email
-      await fetch("/api/notify-new-station", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const stationData = {
+        ...formData,
+        author: {
+          name: session?.user?.name || null,
+          email: session?.user?.email || "",
+          image: session?.user?.image || null,
         },
-        body: JSON.stringify({
-          name: formData.name,
-          address: formData.address,
-          author: formData.author,
-          services: formData.services,
-        }),
-      });
+        status: "en_attente" as StationStatus,
+      };
 
+      await onAddStation(stationData);
       onClose();
+      // Actualisation de la page
+      window.location.reload();
     } catch (error) {
       console.error("Erreur lors de l'ajout de la station:", error);
     }
