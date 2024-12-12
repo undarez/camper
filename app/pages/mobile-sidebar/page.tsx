@@ -20,7 +20,7 @@ import {
 const menuItems = [
   { href: "/", label: "Accueil", icon: Home },
   { href: "/pages/StationCard", label: "Stations", icon: MapPin },
-  { href: "/components/LocalisationStation2", label: "Carte", icon: Map },
+  { href: "/components/localisationStation2", label: "Carte", icon: Map },
   { href: "/pages/Contact", label: "Contact", icon: Mail },
   { href: "/pages/About", label: "À propos", icon: Info },
 ];
