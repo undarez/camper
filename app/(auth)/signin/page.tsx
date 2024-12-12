@@ -1,9 +1,9 @@
 "use client";
 
-import { AuthForm } from "@/app/pages/auth/page";
 import Image from "next/image";
 import Link from "next/link";
 import AuthWrapper from "@/app/components/AuthWrapper";
+import { AuthForm } from "@/app/components/AuthForm";
 
 export default function SignInPage() {
   return (
