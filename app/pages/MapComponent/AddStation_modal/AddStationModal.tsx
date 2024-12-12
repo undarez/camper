@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ import {
   ElectricityType,
   StationStatus,
 } from "@/app/types";
+import dynamic from "next/dynamic";
 
 interface AddStationModalProps {
   isOpen: boolean;
@@ -36,6 +38,11 @@ interface AddStationModalProps {
     station: Omit<CamperWashStation, "id" | "createdAt">
   ) => Promise<void>;
 }
+
+const AdressGeoapifyWithNoSSR = dynamic(
+  () => import("@/app/components/AdressGeoapify/AdressGeoapify"),
+  { ssr: false }
+);
 
 const AddStationModal = ({
   isOpen,
@@ -132,11 +139,31 @@ const AddStationModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Ajouter une station</DialogTitle>
+          <DialogTitle>Ajouter une nouvelle station</DialogTitle>
+          <DialogDescription>
+            Remplissez les informations de la nouvelle station
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label htmlFor="address">Adresse</Label>
+            <AdressGeoapifyWithNoSSR
+              onAddressSelect={(formatted, lat, lon) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  address: formatted,
+                  latitude: lat,
+                  longitude: lon,
+                }));
+              }}
+              existingLocations={[]}
+              isModalOpen={isOpen}
+            />
+          </div>
+
           <div>
             <Label htmlFor="name">Nom de la station</Label>
             <Input
@@ -348,7 +375,7 @@ const AddStationModal = ({
               {isSubmitting ? "Ajout en cours..." : "Ajouter la station"}
             </Button>
           </div>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

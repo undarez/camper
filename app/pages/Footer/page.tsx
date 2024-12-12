@@ -12,7 +12,7 @@ const Footer = () => {
   return (
     <footer className="bg-gradient-to-r from-[#2ABED9] to-[#1B4B82] text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <Card className="bg-white/10 backdrop-blur-sm border-none">
             <CardContent className="pt-6">
               <h3 className="font-semibold text-lg mb-4 text-[#FFD700]">
@@ -51,14 +51,26 @@ const Footer = () => {
               <h3 className="font-semibold text-lg mb-4 text-[#FFD700]">
                 Contact
               </h3>
-              <Button
-                variant="outline"
-                className="bg-white/10 hover:bg-white/20 text-white border border-[#A5E9FF] hover:border-[#FFD700] transition-all"
-                onClick={handleMailTo}
-              >
-                <Mail className="h-4 w-4 mr-2" />
-                Nous contacter
-              </Button>
+              <div className="flex flex-col space-y-4">
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-[#A5E9FF] hover:border-[#FFD700] transition-all"
+                  onClick={handleMailTo}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Nous contacter
+                </Button>
+                <div className="relative">
+                  <Input
+                    type="email"
+                    placeholder="Newsletter..."
+                    className="w-full bg-white/10 border-[#A5E9FF] text-white placeholder:text-white/70"
+                  />
+                  <Button className="absolute right-0 top-0 h-full bg-[#FFD700] hover:bg-[#FFD700]/90 text-[#1B4B82]">
+                    S'abonner
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
           <Card className="bg-white/10 backdrop-blur-sm border-none">
@@ -66,7 +78,7 @@ const Footer = () => {
               <h3 className="font-semibold text-lg mb-4 text-[#FFD700]">
                 Réseaux sociaux
               </h3>
-              <div className="flex space-x-4">
+              <div className="flex flex-wrap gap-4">
                 <Button
                   variant="outline"
                   size="icon"
@@ -87,29 +99,6 @@ const Footer = () => {
                   className="bg-white/10 hover:bg-white/20 text-white border-[#A5E9FF] hover:border-[#FFD700]"
                 >
                   <Instagram className="h-5 w-5" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-white/10 backdrop-blur-sm border-none">
-            <CardContent className="pt-6">
-              <h3 className="font-semibold text-lg mb-4 text-[#FFD700]">
-                Newsletter
-              </h3>
-              <p className="text-[#A5E9FF] mb-4">
-                Restez informé des dernières mises à jour
-              </p>
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Votre email"
-                  className="bg-white/10 border-[#A5E9FF] text-white placeholder:text-[#A5E9FF]/70"
-                />
-                <Button
-                  variant="outline"
-                  className="bg-[#FFD700] hover:bg-[#FFC000] text-[#1B4B82] border-none font-semibold"
-                >
-                  S&apos;inscrire
                 </Button>
               </div>
             </CardContent>
