@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import LoadingMap from "@/app/pages/MapComponent/LoadingMap/page";
 import { CamperWashStation, GeoapifyResult } from "@/app/types";
 import AddStationModal from "@/app/pages/MapComponent/AddStation_modal/AddStationModal";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import ConnectYou from "@/app/pages/auth/connect-you/page";
 import {
   Select,
   SelectContent,
@@ -24,7 +26,7 @@ const AdressGeoapifyWithNoSSR = dynamic(
 );
 
 const LocalisationStation = () => {
-  const { data: session } = useSession();
+  const { status } = useSession();
   const [existingLocations, setExistingLocations] = useState<
     CamperWashStation[]
   >([]);
@@ -35,12 +37,82 @@ const LocalisationStation = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchStations = async () => {
+      try {
+        const response = await fetch("/api/stationUpdapte");
+        if (!response.ok) {
+          throw new Error("Erreur lors du chargement des stations");
+        }
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setExistingLocations(data);
+        } else {
+          console.error("Les données reçues ne sont pas un tableau:", data);
+          setExistingLocations([]);
+        }
+      } catch (error) {
+        console.error("Erreur:", error);
+        toast.error("Impossible de charger les stations");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStations();
+  }, []);
+
+  const handleAddStation = async (
+    station: Omit<CamperWashStation, "id" | "createdAt">
+  ) => {
+    try {
+      const response = await fetch("/api/stationUpdapte", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(station),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'ajout de la station");
+      }
+
+      const newStation = await response.json();
+      setExistingLocations((prev) => [newStation, ...prev]);
+      toast.success("Station ajoutée avec succès");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Erreur:", error);
+      toast.error("Impossible d'ajouter la station");
+    }
+  };
+
   const handleAddressSelect = (formatted: string, lat: number, lon: number) => {
     setSelectedLocation({
       properties: { formatted, lat, lon },
     });
     setIsModalOpen(true);
   };
+
+  if (status === "unauthenticated") {
+    return <ConnectYou />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  const filteredLocations = existingLocations.filter((location) => {
+    const matchesSearch =
+      location.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      location.address?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" || location.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -51,8 +123,8 @@ const LocalisationStation = () => {
           <div className="w-full md:w-[400px]">
             <AdressGeoapifyWithNoSSR
               onAddressSelect={handleAddressSelect}
-              existingLocations={[]}
-              isModalOpen={false}
+              existingLocations={filteredLocations}
+              isModalOpen={isModalOpen}
             />
           </div>
 
@@ -93,7 +165,13 @@ const LocalisationStation = () => {
         </div>
       </div>
 
-      {/* Reste du code ... */}
+      <div className="h-[600px] rounded-lg overflow-hidden border border-border">
+        <AdressGeoapifyWithNoSSR
+          onAddressSelect={handleAddressSelect}
+          existingLocations={filteredLocations}
+          isModalOpen={isModalOpen}
+        />
+      </div>
 
       <AddStationModal
         isOpen={isModalOpen}
