@@ -4,6 +4,9 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
+// Déplacer les styles dans un fichier CSS séparé
+import styles from "@/app/components/AuthForm.module.css";
+
 export function AuthForm() {
   return (
     <div className="grid gap-4">
@@ -40,7 +43,7 @@ export function AuthForm() {
       <Button
         variant="outline"
         onClick={() => signIn("instagram", { callbackUrl: "/" })}
-        className="flex items-center gap-3 w-full text-white border-none transition-all py-6 relative overflow-hidden instagram-btn"
+        className={`flex items-center gap-3 w-full text-white border-none transition-all py-6 relative overflow-hidden ${styles.instagramBtn}`}
       >
         <Image
           src="/images/instagram.svg"
@@ -52,28 +55,6 @@ export function AuthForm() {
         <span className="flex-1 text-center relative z-10">
           Continuer avec Instagram
         </span>
-        <style jsx global>{`
-          .instagram-btn {
-            background: linear-gradient(
-              45deg,
-              #f09433 0%,
-              #e6683c 25%,
-              #dc2743 50%,
-              #cc2366 75%,
-              #bc1888 100%
-            );
-          }
-          .instagram-btn:hover {
-            background: linear-gradient(
-              45deg,
-              #e88a2e 0%,
-              #d85f37 25%,
-              #cc233d 50%,
-              #bb205d 75%,
-              #ab167c 100%
-            );
-          }
-        `}</style>
       </Button>
     </div>
   );
