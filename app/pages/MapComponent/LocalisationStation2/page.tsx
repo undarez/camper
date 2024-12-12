@@ -22,7 +22,10 @@ const AdressGeoapifyWithNoSSR = dynamic(
     import("@/app/components/AdressGeoapify/AdressGeoapifyWrapper").then(
       (mod) => mod.default
     ),
-  { ssr: false, loading: () => <LoadingMap /> }
+  {
+    ssr: false,
+    loading: () => <LoadingMap />,
+  }
 );
 
 const LocalisationStation = () => {
@@ -36,6 +39,7 @@ const LocalisationStation = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [mapKey, setMapKey] = useState(0); // Clé pour forcer le rendu de la carte
 
   useEffect(() => {
     const fetchStations = async () => {
@@ -80,6 +84,7 @@ const LocalisationStation = () => {
       setExistingLocations((prev) => [newStation, ...prev]);
       toast.success("Station ajoutée avec succès");
       setIsModalOpen(false);
+      setMapKey((prev) => prev + 1); // Force le rendu de la carte
     } catch (error) {
       console.error("Erreur:", error);
       toast.error("Impossible d'ajouter la station");
@@ -120,14 +125,6 @@ const LocalisationStation = () => {
         <h1 className="text-2xl font-bold">Carte des stations CamperWash</h1>
 
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-          <div className="w-full md:w-[400px]">
-            <AdressGeoapifyWithNoSSR
-              onAddressSelect={handleAddressSelect}
-              existingLocations={filteredLocations}
-              isModalOpen={isModalOpen}
-            />
-          </div>
-
           <div className="flex gap-4 w-full md:w-auto">
             <Input
               placeholder="Rechercher une station..."
@@ -167,9 +164,11 @@ const LocalisationStation = () => {
 
       <div className="h-[600px] rounded-lg overflow-hidden border border-border">
         <AdressGeoapifyWithNoSSR
+          key={mapKey}
           onAddressSelect={handleAddressSelect}
           existingLocations={filteredLocations}
           isModalOpen={isModalOpen}
+          persistSearchBar={true}
         />
       </div>
 

@@ -52,7 +52,7 @@ export function Statistics() {
   return (
     <div className="w-full max-w-7xl mx-auto px-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300 border-2 border-[#A5E9FF] hover:border-[#FFD700]">
           <div className="flex items-center justify-center mb-4">
             <div className="p-3 bg-blue-100 rounded-full">
               <Image
@@ -70,7 +70,7 @@ export function Statistics() {
           <p className="text-gray-600 text-center">Stations référencées</p>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300 border-2 border-[#A5E9FF] hover:border-[#FFD700]">
           <div className="flex items-center justify-center mb-4">
             <div className="p-3 bg-blue-100 rounded-full">
               <Image
@@ -88,7 +88,7 @@ export function Statistics() {
           <p className="text-gray-600 text-center">Utilisateurs actifs</p>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300 border-2 border-[#A5E9FF] hover:border-[#FFD700]">
           <div className="flex items-center justify-center mb-4">
             <div className="p-3 bg-blue-100 rounded-full">
               <Image
@@ -114,7 +114,7 @@ export function Statistics() {
             {reviews.map((review, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300 border-2 border-[#A5E9FF] hover:border-[#FFD700]"
               >
                 <div className="flex items-center mb-4">
                   <div className="flex-1">

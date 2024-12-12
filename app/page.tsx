@@ -127,11 +127,11 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <Card className="bg-white/10 backdrop-blur-sm border-[#A5E9FF] hover:border-[#FFD700] transition-all">
+    <Card className="bg-white/10 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300 border-2 border-[#A5E9FF] hover:border-[#FFD700]">
       <CardContent className="p-6">
         <div className="text-[#2ABED9] mb-4">{icon}</div>
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="text-muted-foreground">{description}</p>
+        <h3 className="text-xl font-semibold mb-2 text-blue-600">{title}</h3>
+        <p className="text-gray-600">{description}</p>
       </CardContent>
     </Card>
   );

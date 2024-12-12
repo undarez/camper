@@ -15,6 +15,7 @@ import {
 } from "@geoapify/react-geocoder-autocomplete";
 import { icon } from "leaflet";
 import { CheckCircle2, XCircle, Clock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 // Configuration des icônes Leaflet selon le statut
 const createIcon = (status: string) => {
@@ -42,6 +43,7 @@ interface AddressProps {
   onAddressSelect: (formatted: string, lat: number, lon: number) => void;
   existingLocations?: CamperWashStation[];
   isModalOpen?: boolean;
+  persistSearchBar?: boolean;
 }
 
 interface StationServices {
@@ -60,7 +62,45 @@ const AdressGeoapify = ({
   onAddressSelect,
   existingLocations = [],
   isModalOpen = false,
+  persistSearchBar = false,
 }: AddressProps) => {
+  const searchBarRef = useRef<HTMLDivElement>(null);
+  const [searchBarVisible, setSearchBarVisible] = useState(true);
+
+  useEffect(() => {
+    if (!persistSearchBar) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target as Node)
+      ) {
+        setSearchBarVisible(false);
+      }
+    };
+
+    const handleMapClick = () => {
+      if (!isModalOpen) {
+        setSearchBarVisible(true);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("mousemove", handleMapClick);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousemove", handleMapClick);
+    };
+  }, [persistSearchBar, isModalOpen]);
+
+  // Masquer la barre de recherche quand la modale est ouverte
+  useEffect(() => {
+    if (isModalOpen) {
+      setSearchBarVisible(false);
+    }
+  }, [isModalOpen]);
+
   const handleNewLocationSelect = (location: GeoapifyResult) => {
     const { formatted, lat, lon } = location.properties;
     onAddressSelect(formatted, lat, lon);
@@ -103,24 +143,43 @@ const AdressGeoapify = ({
 
   return (
     <div className="space-y-4">
-      <div className="relative w-full">
-        <div className="relative w-full z-[9999]">
-          <GeoapifyContext apiKey={process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}>
-            <GeoapifyGeocoderAutocomplete
-              placeholder="Rechercher une adresse..."
-              lang="fr"
-              limit={5}
-              debounceDelay={300}
-              countryCodes={["fr"]}
-              placeSelect={(value) => {
-                if (value) {
-                  handleNewLocationSelect(value as GeoapifyResult);
-                }
-              }}
-            />
-          </GeoapifyContext>
+      {!isModalOpen && (
+        <div
+          ref={searchBarRef}
+          className={`relative w-full transition-opacity duration-300 ${
+            searchBarVisible && !isModalOpen
+              ? "opacity-100"
+              : "opacity-0 pointer-events-none"
+          }`}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1000,
+            width: "90%",
+            maxWidth: "400px",
+          }}
+        >
+          <div className="relative w-full">
+            <GeoapifyContext apiKey={process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}>
+              <GeoapifyGeocoderAutocomplete
+                placeholder="Rechercher une adresse..."
+                lang="fr"
+                limit={5}
+                debounceDelay={300}
+                countryCodes={["fr"]}
+                placeSelect={(value) => {
+                  if (value) {
+                    handleNewLocationSelect(value as GeoapifyResult);
+                  }
+                }}
+              />
+            </GeoapifyContext>
+          </div>
         </div>
-      </div>
+      )}
+
       {!isModalOpen && (
         <div className="h-[600px] rounded-lg overflow-hidden border border-border relative">
           <MapContainer
