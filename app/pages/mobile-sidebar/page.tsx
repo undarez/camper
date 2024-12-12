@@ -20,7 +20,7 @@ import {
 const menuItems = [
   { href: "/", label: "Accueil", icon: Home },
   { href: "/pages/StationCard", label: "Stations", icon: MapPin },
-  { href: "/pages/LocalisationStation2", label: "Carte", icon: Map },
+  { href: "/components/LocalisationStation2", label: "Carte", icon: Map },
   { href: "/pages/Contact", label: "Contact", icon: Mail },
   { href: "/pages/About", label: "À propos", icon: Info },
 ];
@@ -31,7 +31,7 @@ const adminItems = [
     label: "Gestion des stations",
     icon: Settings,
   },
-  { href: "/admin/users", label: "Gestion des utilisateurs", icon: Users },
+  { href: "/pages/AdminUsers", label: "Gestion des utilisateurs", icon: Users },
 ];
 
 const MobileSidebar = () => {
