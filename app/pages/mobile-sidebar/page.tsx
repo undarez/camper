@@ -6,16 +6,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import {
-  Home,
-  Info,
-  Mail,
-  MapPin,
-  Map,
-  Settings,
-  Users,
-  Menu,
-} from "lucide-react";
+import { Home, Info, Mail, MapPin, Map, Settings, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const menuItems = [
@@ -48,12 +39,24 @@ const MobileSidebar = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden fixed top-4 left-4 z-50"
-        >
-          <Menu className="h-6 w-6" />
+        <Button variant="ghost" size="icon" className="burger-button">
+          <div className="flex flex-col gap-1.5">
+            <span
+              className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${
+                open ? "rotate-45 translate-y-2" : ""
+              }`}
+            />
+            <span
+              className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${
+                open ? "opacity-0" : ""
+              }`}
+            />
+            <span
+              className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${
+                open ? "-rotate-45 -translate-y-2" : ""
+              }`}
+            />
+          </div>
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-[300px] p-0">

@@ -7,7 +7,6 @@ import LoadingMap from "@/app/pages/MapComponent/LoadingMap/page";
 import { CamperWashStation, GeoapifyResult } from "@/app/types";
 import AddStationModal from "@/app/pages/MapComponent/AddStation_modal/AddStationModal";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import ConnectYou from "@/app/pages/auth/connect-you/page";
 import {
@@ -17,6 +16,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  GeoapifyContext,
+  GeoapifyGeocoderAutocomplete,
+} from "@geoapify/react-geocoder-autocomplete";
+import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 
 const AdressGeoapifyWithNoSSR = dynamic(
   () =>
@@ -40,10 +44,10 @@ const LocalisationStation = () => {
   const [selectedLocation, setSelectedLocation] =
     useState<GeoapifyResult | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [mapKey, setMapKey] = useState(0);
 
   useEffect(() => {
     setIsAdmin(session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL);
@@ -66,24 +70,13 @@ const LocalisationStation = () => {
       } catch (error) {
         console.error("Erreur:", error);
         toast.error("Impossible de charger les stations");
-        setExistingLocations([]);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchStations();
   }, []);
-
-  if (!session) {
-    return <ConnectYou />;
-  }
-
-  const handleAddressSelect = (formatted: string, lat: number, lon: number) => {
-    setSelectedLocation({
-      properties: { formatted, lat, lon },
-    });
-    setIsModalOpen(true);
-  };
 
   const handleAddStation = async (
     station: Omit<CamperWashStation, "id" | "createdAt">
@@ -102,22 +95,29 @@ const LocalisationStation = () => {
       const newStation = await response.json();
       setExistingLocations((prev) => [newStation, ...prev]);
       toast.success("Station ajoutée avec succès");
+      setIsModalOpen(false);
+      setMapKey((prev) => prev + 1);
     } catch (error) {
       console.error("Erreur:", error);
       toast.error("Impossible d'ajouter la station");
-      throw error;
     }
   };
 
+  const handleAddressSelect = (formatted: string, lat: number, lon: number) => {
+    setSelectedLocation({
+      properties: { formatted, lat, lon },
+    });
+    setIsModalOpen(true);
+  };
+
+  if (!session) {
+    return <ConnectYou />;
+  }
+
   const filteredLocations = existingLocations.filter((location) => {
-    const matchesSearch =
-      location.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      false ||
-      location.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      false;
     const matchesStatus =
       statusFilter === "all" || location.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    return matchesStatus;
   });
 
   const activeStations = filteredLocations.filter(
@@ -136,125 +136,136 @@ const LocalisationStation = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Carte des stations CamperWash</h1>
-        <div className="flex gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-green-500"></span>
-            <span className="text-sm">Active</span>
+    <div className="flex h-screen overflow-hidden">
+      <div className="flex-1 overflow-y-auto md:pl-64">
+        <div className="p-4 space-y-6">
+          <div className="flex justify-end items-center">
+            <h1 className="text-2xl font-bold">
+              Carte des stations CamperWash
+            </h1>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-            <span className="text-sm">En attente</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-red-500"></span>
-            <span className="text-sm">Inactive</span>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex gap-4 mb-6">
-        <Input
-          placeholder="Rechercher une station..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-xs"
-        />
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filtrer par status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tous les status</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="en_attente">En attente</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <div className="h-[600px] rounded-lg overflow-hidden border border-border">
-            <AdressGeoapifyWithNoSSR
-              onAddressSelect={handleAddressSelect}
-              existingLocations={filteredLocations}
-              isModalOpen={isModalOpen}
-            />
+          <div className="flex flex-wrap gap-4 mb-6">
+            <div className="w-full md:w-auto flex-grow">
+              <GeoapifyContext
+                apiKey={process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}
+              >
+                <GeoapifyGeocoderAutocomplete
+                  placeholder="Rechercher une adresse..."
+                  lang="fr"
+                  limit={5}
+                  debounceDelay={300}
+                  countryCodes={["fr"]}
+                  placeSelect={(value) => {
+                    if (value) {
+                      const { lat, lon, formatted } = value.properties;
+                      handleAddressSelect(formatted, lat, lon);
+                    }
+                  }}
+                />
+              </GeoapifyContext>
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full md:w-[180px]">
+                <SelectValue placeholder="Filtrer par status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tous les status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="en_attente">En attente</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </div>
 
-        <div className="space-y-4">
-          <div className="p-4 bg-card rounded-lg border border-border">
-            <h2 className="text-lg font-semibold mb-4">Statistiques</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-background rounded-md">
-                <p className="text-sm text-muted-foreground">Total stations</p>
-                <p className="text-2xl font-bold">{filteredLocations.length}</p>
-              </div>
-              <div className="p-3 bg-background rounded-md">
-                <p className="text-sm text-muted-foreground">Actives</p>
-                <p className="text-2xl font-bold text-green-500">
-                  {activeStations.length}
-                </p>
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <div className="h-[calc(100vh-200px)] rounded-lg overflow-hidden border border-border">
+                <AdressGeoapifyWithNoSSR
+                  key={`map-${mapKey}`}
+                  onAddressSelect={handleAddressSelect}
+                  existingLocations={filteredLocations}
+                  isModalOpen={isModalOpen}
+                  persistSearchBar={false}
+                />
               </div>
             </div>
-          </div>
 
-          <div className="p-4 bg-card rounded-lg border border-border">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Stations récentes</h2>
-              {isAdmin && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    (window.location.href = "/pages/AdminStation/AdminPage")
-                  }
-                >
-                  Gérer les stations
-                </Button>
-              )}
-            </div>
-            <div className="space-y-3">
-              {filteredLocations.slice(0, 5).map((location) => (
-                <div
-                  key={location.id}
-                  className="p-3 bg-background rounded-md space-y-1"
-                >
-                  <p className="font-medium">{location.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {location.address}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        location.status === "active"
-                          ? "bg-green-500"
-                          : location.status === "en_attente"
-                          ? "bg-yellow-500"
-                          : "bg-red-500"
-                      }`}
-                    ></span>
-                    <span className="text-xs text-muted-foreground">
-                      {STATUS_DISPLAY[location.status]}
-                    </span>
+            <div className="space-y-4">
+              <div className="p-4 bg-card rounded-lg border border-border">
+                <h2 className="text-lg font-semibold mb-4">Statistiques</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-background rounded-md">
+                    <p className="text-sm text-muted-foreground">
+                      Total stations
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {filteredLocations.length}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-background rounded-md">
+                    <p className="text-sm text-muted-foreground">Actives</p>
+                    <p className="text-2xl font-bold text-green-500">
+                      {activeStations.length}
+                    </p>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="p-4 bg-card rounded-lg border border-border">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">Stations récentes</h2>
+                  {isAdmin && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        (window.location.href = "/pages/AdminStation/AdminPage")
+                      }
+                    >
+                      Gérer les stations
+                    </Button>
+                  )}
+                </div>
+                <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                  {filteredLocations.slice(0, 5).map((location) => (
+                    <div
+                      key={location.id}
+                      className="p-3 bg-background rounded-md space-y-1"
+                    >
+                      <p className="font-medium">{location.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {location.address}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            location.status === "active"
+                              ? "bg-green-500"
+                              : location.status === "en_attente"
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
+                          }`}
+                        ></span>
+                        <span className="text-xs text-muted-foreground">
+                          {STATUS_DISPLAY[location.status]}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
+
+          <AddStationModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            selectedLocation={selectedLocation}
+            onAddStation={handleAddStation}
+          />
         </div>
       </div>
-
-      <AddStationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        selectedLocation={selectedLocation}
-        onAddStation={handleAddStation}
-      />
     </div>
   );
 };

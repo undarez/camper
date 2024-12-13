@@ -143,45 +143,33 @@ const AdressGeoapify = ({
 
   return (
     <div className="space-y-4">
-      {!isModalOpen && (
+      {!isModalOpen && persistSearchBar && (
         <div
           ref={searchBarRef}
-          className={`relative w-full transition-opacity duration-300 ${
-            searchBarVisible && !isModalOpen
-              ? "opacity-100"
-              : "opacity-0 pointer-events-none"
-          }`}
+          className="geoapify-geocoder-container"
           style={{
-            position: "absolute",
-            top: "10px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 1000,
-            width: "90%",
-            maxWidth: "400px",
+            display: searchBarVisible && !isModalOpen ? "block" : "none",
           }}
         >
-          <div className="relative w-full">
-            <GeoapifyContext apiKey={process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}>
-              <GeoapifyGeocoderAutocomplete
-                placeholder="Rechercher une adresse..."
-                lang="fr"
-                limit={5}
-                debounceDelay={300}
-                countryCodes={["fr"]}
-                placeSelect={(value) => {
-                  if (value) {
-                    handleNewLocationSelect(value as GeoapifyResult);
-                  }
-                }}
-              />
-            </GeoapifyContext>
-          </div>
+          <GeoapifyContext apiKey={process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}>
+            <GeoapifyGeocoderAutocomplete
+              placeholder="Rechercher une adresse..."
+              lang="fr"
+              limit={5}
+              debounceDelay={300}
+              countryCodes={["fr"]}
+              placeSelect={(value) => {
+                if (value) {
+                  handleNewLocationSelect(value as GeoapifyResult);
+                }
+              }}
+            />
+          </GeoapifyContext>
         </div>
       )}
 
       {!isModalOpen && (
-        <div className="h-[600px] rounded-lg overflow-hidden border border-border relative">
+        <div className="map-container h-[calc(100vh-200px)] rounded-lg overflow-hidden border border-border">
           <MapContainer
             center={[46.603354, 1.888334]}
             zoom={6}
